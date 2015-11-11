@@ -12,8 +12,6 @@ display_batch = 200 #set to 0 to turn off
 display_step = 1
 
 #Network Parameters
-n_hidden_1 = 256
-n_hidden_2 = 256
 n_input = 784 #MNIST data input
 n_classes = 10 #MNIST total classes
 
