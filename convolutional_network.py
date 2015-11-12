@@ -21,7 +21,7 @@ y = tf.placeholder(tf.types.float32, [None, n_classes])
 keep_prob = tf.placeholder(tf.types.float32) #dropout
 
 def conv2d(img, w, b):
-    return tf.nn.relu(tf.nn.conv2d(img, w, strides=[1, 1, 1, 1], padding='SAME') + b)
+    return tf.nn.relu(tf.nn.bias_add(tf.nn.conv2d(img, w, strides=[1, 1, 1, 1], padding='SAME'),b))
 
 def max_pool(img, k):
     return tf.nn.max_pool(img, ksize=[1, k, k, 1], strides=[1, k, k, 1], padding='SAME')
@@ -67,18 +67,16 @@ correct_pred = tf.equal(tf.argmax(pred,1), tf.argmax(y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.types.float32))
 
 # Train
-#load mnist data
 init = tf.initialize_all_variables()
 with tf.Session() as sess:
     sess.run(init)
     step = 1
-    avg_cost = 0.
     while step * batch_size < training_iters:
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
         sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys, keep_prob: dropout})
         if step % display_step == 0:
-            avg_cost += sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})/batch_size
-            print "Iter", str(step*batch_size), "cost=", "{:.9f}".format(avg_cost/step)
+            loss = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: dropout})/batch_size
+            print "Iter", str(step*batch_size), "loss=", "{:.9f}".format(loss/step)
         step += 1
     print "Optimization Finished!"
     #Accuracy on 256 mnist test images
