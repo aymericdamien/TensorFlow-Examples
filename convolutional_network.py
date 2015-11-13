@@ -75,8 +75,9 @@ with tf.Session() as sess:
         batch_xs, batch_ys = mnist.train.next_batch(batch_size)
         sess.run(optimizer, feed_dict={x: batch_xs, y: batch_ys, keep_prob: dropout})
         if step % display_step == 0:
-            loss = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: dropout})/batch_size
-            print "Iter", str(step*batch_size), "loss=", "{:.9f}".format(loss/step)
+            acc = sess.run(accuracy, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            loss = sess.run(cost, feed_dict={x: batch_xs, y: batch_ys, keep_prob: 1.})
+            print "Iter " + str(step*batch_size) + ", Loss= " + "{:.6f}".format(loss) + ", Training Accuracy= " + "{:.5f}".format(acc)
         step += 1
     print "Optimization Finished!"
     #Accuracy on 256 mnist test images
