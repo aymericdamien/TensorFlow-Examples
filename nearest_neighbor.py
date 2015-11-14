@@ -12,13 +12,12 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 Xtr, Ytr = mnist.train.next_batch(5000) #5000 for training (nn candidates)
 Xte, Yte = mnist.test.next_batch(200) #200 for testing
 
+#Reshape images to 1D
 Xtr = np.reshape(Xtr, newshape=(-1, 28*28))
 Xte = np.reshape(Xte, newshape=(-1, 28*28))
 
 xtr = tf.placeholder("float", [None, 784])
 xte = tf.placeholder("float", [784])
-
-nn = tf.Variable(tf.zeros([10]))
 
 #Calculation of L1 Distance
 distance = tf.reduce_sum(tf.abs(tf.add(xtr, tf.neg(xte))), reduction_indices=1)
