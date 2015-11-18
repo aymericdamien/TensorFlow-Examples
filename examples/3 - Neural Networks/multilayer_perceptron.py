@@ -18,7 +18,7 @@ training_epochs = 15
 batch_size = 100
 display_step = 1
 
-#Network Parameters
+# Network Parameters
 n_hidden_1 = 256 # 1st layer num features
 n_hidden_2 = 256 # 2nd layer num features
 n_input = 784 # MNIST data input (img shape: 28*28)
