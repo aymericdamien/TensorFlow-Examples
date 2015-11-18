@@ -1,5 +1,5 @@
 '''
-A Multilayer Perceptron implementation example using TensorFlow library.
+A Convolutional Network implementation example using TensorFlow library.
 This example is using the MNIST database of handwritten digits (http://yann.lecun.com/exdb/mnist/)
 
 Author: Aymeric Damien
