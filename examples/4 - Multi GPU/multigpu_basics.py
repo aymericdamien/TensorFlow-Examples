@@ -1,4 +1,10 @@
-#Multi GPU Basic example
+'''
+Basic Multi GPU computation example using TensorFlow library.
+
+Author: Aymeric Damien
+Project: https://github.com/aymericdamien/TensorFlow-Examples/
+'''
+
 '''
 This tutorial requires your machine to have 2 GPUs
 "/cpu:0": The CPU of your machine.
