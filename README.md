@@ -38,4 +38,4 @@ For more details about TensorFlow installation, you can check [Setup_TensorFlow.
 Some examples require MNIST dataset for training and testing. Don't worry, this dataset will automatically be downloaded when running examples (with input_data.py).
 MNIST is a database of handwritten digits, with 60,000 examples for training and 10,000 examples for testing. (Website: [http://yann.lecun.com/exdb/mnist/](http://yann.lecun.com/exdb/mnist/))
 
-_Other tutorials are coming soon..._
+_Other tutorials are coming soon...._
