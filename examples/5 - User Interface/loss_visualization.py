@@ -81,6 +81,6 @@ with tf.Session() as sess:
     print "Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels})
 
 '''
-Run the command line: tensorboard --logdir=/tmp/tensorflow
+Run the command line: tensorboard --logdir=/tmp/tensorflow_logs
 Open http://localhost:6006/ into your web browser
 '''
