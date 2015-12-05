@@ -32,7 +32,7 @@ y = tf.placeholder("float", [None, n_classes])
 def multilayer_perceptron(_X, _weights, _biases):
     layer_1 = tf.nn.relu(tf.add(tf.matmul(_X, _weights['h1']), _biases['b1'])) #Hidden layer with RELU activation
     layer_2 = tf.nn.relu(tf.add(tf.matmul(layer_1, _weights['h2']), _biases['b2'])) #Hidden layer with RELU activation
-    return tf.matmul(layer_2, weights['out']) + biases['out']
+    return tf.matmul(layer_2, _weights['out']) + _biases['out']
 
 # Store layers weight & bias
 weights = {
