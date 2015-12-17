@@ -15,6 +15,11 @@ import tensorflow as tf
 from tensorflow.models.rnn import rnn, rnn_cell
 import numpy as np
 
+'''
+To classify images using a reccurent neural network, we consider every image row as a sequence of pixels.
+Because MNIST image shape is 28*28px, we will then handle 28 sequences of 28 steps for every sample.
+'''
+
 # Parameters
 learning_rate = 0.001
 training_iters = 100000
