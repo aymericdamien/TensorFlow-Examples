@@ -34,7 +34,8 @@ n_classes = 10 # MNIST total classes (0-9 digits)
 
 # tf Graph input
 x = tf.placeholder("float", [None, n_steps, n_input])
-istate = tf.placeholder("float", [None, 2*n_hidden]) #state & cell => 2x n_hidden
+# Tensorflow LSTM cell requires 2x n_hidden length (state & cell)
+istate = tf.placeholder("float", [None, 2*n_hidden])
 y = tf.placeholder("float", [None, n_classes])
 
 # Define weights
