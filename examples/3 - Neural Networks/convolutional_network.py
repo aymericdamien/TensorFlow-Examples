@@ -24,9 +24,9 @@ n_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
 # tf Graph input
-x = tf.placeholder(tf.types.float32, [None, n_input])
-y = tf.placeholder(tf.types.float32, [None, n_classes])
-keep_prob = tf.placeholder(tf.types.float32) #dropout (keep probability)
+x = tf.placeholder(tf.float32, [None, n_input])
+y = tf.placeholder(tf.float32, [None, n_classes])
+keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
 
 # Create model
 def conv2d(img, w, b):
