@@ -23,8 +23,8 @@ with tf.Session() as sess:
 # The value returned by the constructor represents the output
 # of the Variable op. (define as input when running session)
 # tf Graph input
-a = tf.placeholder(tf.types.int16)
-b = tf.placeholder(tf.types.int16)
+a = tf.placeholder(tf.int16)
+b = tf.placeholder(tf.int16)
 
 # Define some operations
 add = tf.add(a, b)
