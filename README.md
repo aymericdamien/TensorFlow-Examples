@@ -2,7 +2,7 @@
 Code examples for some popular machine learning algorithms, using TensorFlow library. This tutorial is designed to easily dive into TensorFlow, through examples. It includes both notebook and code with explanations.
 
 ### Notice: 
-Here is a library that makes TensorFlow more convenients to use: [TFLearn](https://github.com/tflearn/tflearn). You can have a look, there are many other examples and pre-built operations.
+Here is a library that makes TensorFlow more convenient to use: [TFLearn](https://github.com/tflearn/tflearn). You can have a look, there are many other examples and pre-built operations.
 
 ## Tutorial index
 
