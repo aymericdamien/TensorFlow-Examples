@@ -1,9 +1,6 @@
 # TensorFlow Examples
 Code examples for some popular machine learning algorithms, using TensorFlow library. This tutorial is designed to easily dive into TensorFlow, through examples. It includes both notebook and code with explanations.
 
-### Notice: 
-[TFLearn](https://github.com/tflearn/tflearn) is a library that provides a simplified interface for TensorFlow. It was designed to speed-up experimentations. You can have a look, there are many other [examples](https://github.com/tflearn/tflearn/tree/master/examples) and [pre-built operations](http://tflearn.org/doc_index/#api).
-
 ## Tutorial index
 
 #### 1 - Introduction
@@ -31,7 +28,7 @@ Code examples for some popular machine learning algorithms, using TensorFlow lib
 
 
 ## More Examples
-These examples are coming from [TFLearn](http://tflearn.org) examples. They require tflearn to be installed in order to work. TFLearn is a simplified interface for TensorFlow that introduce pre-built layers, ops, training functions...
+The following examples are coming from [TFLearn](https://github.com/tflearn/tflearn), a library that provides a simplified interface for TensorFlow. You can have a look, there are many [examples](https://github.com/tflearn/tflearn/tree/master/examples) and [pre-built operations and layers](http://tflearn.org/doc_index/#api).
 
 #### Basics
 - [Linear Regression](https://github.com/tflearn/tflearn/blob/master/examples/basics/linear_regression.py). Implement a linear regression using TFLearn.
