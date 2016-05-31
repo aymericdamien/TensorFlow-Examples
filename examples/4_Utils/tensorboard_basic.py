@@ -18,7 +18,7 @@ learning_rate = 0.01
 training_epochs = 25
 batch_size = 100
 display_step = 1
-logs_path = '/tmp/tensorflow_logs'
+logs_path = '/tmp/tensorflow_logs/example'
 
 # tf Graph Input
 # mnist data image of shape 28*28=784
@@ -61,7 +61,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     # op to write logs to Tensorboard
-    summary_writer = tf.train.SummaryWriter(logs_path)
+    summary_writer = tf.train.SummaryWriter(logs_path, graph=tf.get_default_graph())
 
     # Training cycle
     for epoch in range(training_epochs):
