@@ -1,5 +1,6 @@
 # TensorFlow Examples
-Code examples for some popular machine learning algorithms, using TensorFlow library. This tutorial is designed to easily dive into TensorFlow, through examples. It includes both notebook and code with explanations.
+TensorFlow Tutorial with popular machine learning algorithms implementation examples. This tutorial was designed for easily diving into TensorFlow, through examples.
+It is suitable for beginners who want to find clear and concise examples about TensorFlow. For readability, the tutorial includes both notebook and code with explanations.
 
 ## Tutorial index
 
