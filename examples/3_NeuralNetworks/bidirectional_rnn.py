@@ -53,6 +53,8 @@ def BiRNN(x, weights, biases):
 
     # Prepare data shape to match `bidirectional_rnn` function requirements
     # Current data input shape: (batch_size, n_steps, n_input)
+    # Required shape: 'n_steps' tensors list of shape (batch_size, n_hidden)
+
     # Permuting batch_size and n_steps
     x = tf.transpose(x, [1, 0, 2])
     # Reshape to (n_steps*batch_size, n_input)
@@ -67,8 +69,12 @@ def BiRNN(x, weights, biases):
     lstm_bw_cell = rnn_cell.BasicLSTMCell(n_hidden, forget_bias=1.0)
 
     # Get lstm cell output
-    outputs = rnn.bidirectional_rnn(lstm_fw_cell, lstm_bw_cell, x,
-                                    dtype=tf.float32)
+    try:
+        outputs, _, _ = rnn.bidirectional_rnn(lstm_fw_cell, lstm_bw_cell, x,
+                                              dtype=tf.float32)
+    except Exception: # Old TensorFlow version only returns outputs not states
+        outputs = rnn.bidirectional_rnn(lstm_fw_cell, lstm_bw_cell, x,
+                                        dtype=tf.float32)
 
     # Linear activation, using rnn inner loop last output
     return tf.matmul(outputs[-1], weights['out']) + biases['out']
