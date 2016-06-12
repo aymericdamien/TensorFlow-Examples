@@ -77,6 +77,9 @@ The following examples are coming from [TFLearn](https://github.com/tflearn/tfle
 - [City Name Generation](https://github.com/tflearn/tflearn/blob/master/examples/nlp/lstm_generator_cityname.py). Generates new US-cities name, using LSTM network.
 - [Shakespeare Scripts Generation](https://github.com/tflearn/tflearn/blob/master/examples/nlp/lstm_generator_shakespeare.py). Generates new Shakespeare scripts, using LSTM network.
 
+## Reinforcement Learning
+- [Atari Pong 1-step Q-Learning](https://github.com/tflearn/tflearn/blob/master/examples/reinforcement_learning/pong_1step_qlearning.py). Teach a machine to play Atari Pong game using 1-step Q-learning.
+
 ## Notebooks
 - [Spiral Classification Problem](https://github.com/tflearn/tflearn/blob/master/examples/notebooks/spiral.ipynb). TFLearn implementation of spiral classification problem from Stanford CS231n.
 
