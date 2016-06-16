@@ -39,11 +39,9 @@ y = tf.placeholder("float", [None, n_classes])
 
 # Define weights
 weights = {
-    'hidden': tf.Variable(tf.random_normal([n_input, n_hidden])),
     'out': tf.Variable(tf.random_normal([n_hidden, n_classes]))
 }
 biases = {
-    'hidden': tf.Variable(tf.random_normal([n_hidden])),
     'out': tf.Variable(tf.random_normal([n_classes]))
 }
 
