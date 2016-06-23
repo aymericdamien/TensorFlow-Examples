@@ -53,13 +53,13 @@ def BiRNN(x, weights, biases):
 
     # Prepare data shape to match `bidirectional_rnn` function requirements
     # Current data input shape: (batch_size, n_steps, n_input)
-    # Required shape: 'n_steps' tensors list of shape (batch_size, n_hidden)
+    # Required shape: 'n_steps' tensors list of shape (batch_size, n_input)
 
     # Permuting batch_size and n_steps
     x = tf.transpose(x, [1, 0, 2])
     # Reshape to (n_steps*batch_size, n_input)
     x = tf.reshape(x, [-1, n_input])
-    # Split to get a list of 'n_steps' tensors of shape (batch_size, n_hidden)
+    # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
     x = tf.split(0, n_steps, x)
 
     # Define lstm cells with tensorflow
