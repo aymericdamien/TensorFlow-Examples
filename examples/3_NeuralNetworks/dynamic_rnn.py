@@ -146,7 +146,7 @@ def dynamicRNN(x, seqlen, weights, biases):
     # Indexing
     outputs = tf.gather(tf.reshape(outputs, [-1, n_hidden]), index)
 
-    # Linear activation, using rnn inner loop last output
+    # Linear activation, using outputs computed above
     return tf.matmul(outputs, weights['out']) + biases['out']
 
 pred = dynamicRNN(x, seqlen, weights, biases)
