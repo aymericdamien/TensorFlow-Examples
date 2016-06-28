@@ -185,8 +185,7 @@ with tf.Session() as sess:
         step += 1
     print "Optimization Finished!"
 
-    # Calculate accuracy for 128 mnist test images
-    test_len = 128
+    # Calculate accuracy
     test_data = testset.data
     test_label = testset.labels
     test_seqlen = testset.seqlen
