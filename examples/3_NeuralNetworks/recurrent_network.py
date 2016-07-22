@@ -8,7 +8,7 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
 import tensorflow as tf
-from tensorflow.models.rnn import rnn, rnn_cell
+from tensorflow.python.ops import rnn, rnn_cell
 import numpy as np
 
 # Import MINST data
