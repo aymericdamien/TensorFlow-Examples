@@ -108,7 +108,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     # Restore model weights from previously saved model
-    load_path = saver.restore(sess, model_path)
+    saver.restore(sess, model_path)
     print "Model restored from file: %s" % save_path
 
     # Resume training
