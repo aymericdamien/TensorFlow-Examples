@@ -9,6 +9,8 @@ Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
+from __future__ import print_function
+
 import tensorflow as tf
 import random
 
@@ -179,16 +181,16 @@ with tf.Session() as sess:
             # Calculate batch loss
             loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y,
                                              seqlen: batch_seqlen})
-            print "Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc)
+                  "{:.5f}".format(acc))
         step += 1
-    print "Optimization Finished!"
+    print("Optimization Finished!")
 
     # Calculate accuracy
     test_data = testset.data
     test_label = testset.labels
     test_seqlen = testset.seqlen
-    print "Testing Accuracy:", \
+    print("Testing Accuracy:", \
         sess.run(accuracy, feed_dict={x: test_data, y: test_label,
-                                      seqlen: test_seqlen})
+                                      seqlen: test_seqlen}))

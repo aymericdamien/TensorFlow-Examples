@@ -5,6 +5,8 @@ Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
+from __future__ import print_function
+
 import tensorflow as tf
 
 #Simple hello world using TensorFlow
@@ -20,4 +22,4 @@ hello = tf.constant('Hello, TensorFlow!')
 sess = tf.Session()
 
 # Run the op
-print sess.run(hello)
+print(sess.run(hello))
