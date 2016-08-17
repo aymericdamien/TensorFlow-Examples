@@ -7,6 +7,8 @@ Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
+from __future__ import print_function
+
 import tensorflow as tf
 from tensorflow.python.ops import rnn, rnn_cell
 import numpy as np
@@ -97,15 +99,15 @@ with tf.Session() as sess:
             acc = sess.run(accuracy, feed_dict={x: batch_x, y: batch_y})
             # Calculate batch loss
             loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y})
-            print "Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc)
+                  "{:.5f}".format(acc))
         step += 1
-    print "Optimization Finished!"
+    print("Optimization Finished!")
 
     # Calculate accuracy for 128 mnist test images
     test_len = 128
     test_data = mnist.test.images[:test_len].reshape((-1, n_steps, n_input))
     test_label = mnist.test.labels[:test_len]
-    print "Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={x: test_data, y: test_label})
+    print("Testing Accuracy:", \
+        sess.run(accuracy, feed_dict={x: test_data, y: test_label}))

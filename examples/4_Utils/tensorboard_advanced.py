@@ -7,6 +7,8 @@ Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
+from __future__ import print_function
+
 import tensorflow as tf
 
 # Import MINST data
@@ -126,14 +128,14 @@ with tf.Session() as sess:
             avg_cost += c / total_batch
         # Display logs per epoch step
         if (epoch+1) % display_step == 0:
-            print "Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(avg_cost)
+            print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(avg_cost))
 
-    print "Optimization Finished!"
+    print("Optimization Finished!")
 
     # Test model
     # Calculate accuracy
-    print "Accuracy:", acc.eval({x: mnist.test.images, y: mnist.test.labels})
+    print("Accuracy:", acc.eval({x: mnist.test.images, y: mnist.test.labels}))
 
-    print "Run the command line:\n" \
+    print("Run the command line:\n" \
           "--> tensorboard --logdir=/tmp/tensorflow_logs " \
-          "\nThen open http://0.0.0.0:6006/ into your web browser"
+          "\nThen open http://0.0.0.0:6006/ into your web browser")

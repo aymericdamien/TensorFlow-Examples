@@ -7,6 +7,8 @@ Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
+from __future__ import print_function
+
 # Import MINST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
@@ -68,7 +70,7 @@ init = tf.initialize_all_variables()
 saver = tf.train.Saver()
 
 # Running first session
-print "Starting 1st session..."
+print("Starting 1st session...")
 with tf.Session() as sess:
     # Initialize variables
     sess.run(init)
@@ -87,29 +89,29 @@ with tf.Session() as sess:
             avg_cost += c / total_batch
         # Display logs per epoch step
         if epoch % display_step == 0:
-            print "Epoch:", '%04d' % (epoch+1), "cost=", \
-                "{:.9f}".format(avg_cost)
-    print "First Optimization Finished!"
+            print("Epoch:", '%04d' % (epoch+1), "cost=", \
+                "{:.9f}".format(avg_cost))
+    print("First Optimization Finished!")
 
     # Test model
     correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
     # Calculate accuracy
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print "Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels})
+    print("Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels}))
 
     # Save model weights to disk
     save_path = saver.save(sess, model_path)
-    print "Model saved in file: %s" % save_path
+    print("Model saved in file: %s" % save_path)
 
 # Running a new session
-print "Starting 2nd session..."
+print("Starting 2nd session...")
 with tf.Session() as sess:
     # Initialize variables
     sess.run(init)
 
     # Restore model weights from previously saved model
     saver.restore(sess, model_path)
-    print "Model restored from file: %s" % save_path
+    print("Model restored from file: %s" % save_path)
 
     # Resume training
     for epoch in range(7):
@@ -125,13 +127,13 @@ with tf.Session() as sess:
             avg_cost += c / total_batch
         # Display logs per epoch step
         if epoch % display_step == 0:
-            print "Epoch:", '%04d' % (epoch + 1), "cost=", \
-                "{:.9f}".format(avg_cost)
-    print "Second Optimization Finished!"
+            print("Epoch:", '%04d' % (epoch + 1), "cost=", \
+                "{:.9f}".format(avg_cost))
+    print("Second Optimization Finished!")
 
     # Test model
     correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
     # Calculate accuracy
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print "Accuracy:", accuracy.eval(
-        {x: mnist.test.images, y: mnist.test.labels})
+    print("Accuracy:", accuracy.eval(
+        {x: mnist.test.images, y: mnist.test.labels}))
