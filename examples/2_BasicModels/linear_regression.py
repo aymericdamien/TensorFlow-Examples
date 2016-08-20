@@ -58,8 +58,8 @@ with tf.Session() as sess:
             print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c), \
                 "W=", sess.run(W), "b=", sess.run(b))
 
-    print("Optimization Finished!"
-    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y}))
+    print("Optimization Finished!")
+    training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
     print("Training cost=", training_cost, "W=", sess.run(W), "b=", sess.run(b), '\n')
 
     #Graphic display
