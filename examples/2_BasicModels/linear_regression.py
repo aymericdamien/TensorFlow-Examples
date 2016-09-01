@@ -52,7 +52,7 @@ with tf.Session() as sess:
         for (x, y) in zip(train_X, train_Y):
             sess.run(optimizer, feed_dict={X: x, Y: y})
 
-        #Display logs per epoch step
+        # Display logs per epoch step
         if (epoch+1) % display_step == 0:
             c = sess.run(cost, feed_dict={X: train_X, Y:train_Y})
             print("Epoch:", '%04d' % (epoch+1), "cost=", "{:.9f}".format(c), \
@@ -62,7 +62,7 @@ with tf.Session() as sess:
     training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
     print("Training cost=", training_cost, "W=", sess.run(W), "b=", sess.run(b), '\n')
 
-    #Graphic display
+    # Graphic display
     plt.plot(train_X, train_Y, 'ro', label='Original data')
     plt.plot(train_X, sess.run(W) * train_X + sess.run(b), label='Fitted line')
     plt.legend()
