@@ -11,7 +11,7 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-# Import MINST data
+# Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
@@ -64,7 +64,7 @@ biases = {
 }
 
 # Encapsulating all ops into scopes, making Tensorboard's Graph
-# visualization more convenient
+# Visualization more convenient
 with tf.name_scope('Model'):
     # Build model
     pred = multilayer_perceptron(x, weights, biases)
