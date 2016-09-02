@@ -1,5 +1,5 @@
 '''
-A Bidirectional Reccurent Neural Network (LSTM) implementation example using TensorFlow library.
+A Bidirectional Recurrent Neural Network (LSTM) implementation example using TensorFlow library.
 This example is using the MNIST database of handwritten digits (http://yann.lecun.com/exdb/mnist/)
 Long Short Term Memory paper: http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf
 
@@ -13,12 +13,12 @@ import tensorflow as tf
 from tensorflow.python.ops import rnn, rnn_cell
 import numpy as np
 
-# Import MINST data
+# Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 '''
-To classify images using a bidirectional reccurent neural network, we consider
+To classify images using a bidirectional recurrent neural network, we consider
 every image row as a sequence of pixels. Because MNIST image shape is 28*28px,
 we will then handle 28 sequences of 28 steps for every sample.
 '''
@@ -41,7 +41,7 @@ y = tf.placeholder("float", [None, n_classes])
 
 # Define weights
 weights = {
-    # Hidden layer weights => 2*n_hidden because of foward + backward cells
+    # Hidden layer weights => 2*n_hidden because of forward + backward cells
     'out': tf.Variable(tf.random_normal([2*n_hidden, n_classes]))
 }
 biases = {

@@ -1,5 +1,5 @@
 '''
-A Dynamic Reccurent Neural Network (LSTM) implementation example using
+A Dynamic Recurrent Neural Network (LSTM) implementation example using
 TensorFlow library. This example is using a toy dataset to classify linear
 sequences. The generated sequences have variable length.
 
@@ -26,7 +26,7 @@ class ToySequenceData(object):
 
     NOTICE:
     We have to pad each sequence to reach 'max_seq_len' for TensorFlow
-    consistency (we cannot feed a numpy array with unconsistent
+    consistency (we cannot feed a numpy array with inconsistent
     dimensions). The dynamic calculation will then be perform thanks to
     'seqlen' attribute that records every actual sequence length.
     """
@@ -130,7 +130,7 @@ def dynamicRNN(x, seqlen, weights, biases):
                                 sequence_length=seqlen)
 
     # When performing dynamic calculation, we must retrieve the last
-    # dynamically computed output, i.e, if a sequence length is 10, we need
+    # dynamically computed output, i.e., if a sequence length is 10, we need
     # to retrieve the 10th output.
     # However TensorFlow doesn't support advanced indexing yet, so we build
     # a custom op that for each sample in batch size, get its length and
