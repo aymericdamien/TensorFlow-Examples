@@ -36,23 +36,30 @@ y = tf.placeholder("float", [None, n_classes])
 def multilayer_perceptron(x, weights, biases):
     # Hidden layer with RELU activation
     layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
+    # layer_1 = tf.nn.relu(layer_1)
+    # layer_1 = tf.nn.sigmoid(layer_1)
+    layer_1 = tf.nn.tanh(layer_1) # worse results than sigmoid or relu
+
+    # MY EXPERIMENTS
+    # one layer gives the same performance as two layers
+    # also it seems like RELU does not help much, sigmoid gives the same performance
+
     # Hidden layer with RELU activation
-    layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
-    layer_2 = tf.nn.relu(layer_2)
+    # layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+    # layer_2 = tf.nn.relu(layer_2)
     # Output layer with linear activation
-    out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+    out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
     return out_layer
 
 # Store layers weight & bias
 weights = {
     'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
+    #'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
     'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
 }
 biases = {
     'b1': tf.Variable(tf.random_normal([n_hidden_1])),
-    'b2': tf.Variable(tf.random_normal([n_hidden_2])),
+    #'b2': tf.Variable(tf.random_normal([n_hidden_2])),
     'out': tf.Variable(tf.random_normal([n_classes]))
 }
 
@@ -64,7 +71,9 @@ cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
-init = tf.initialize_all_variables()
+# init = tf.initialize_all_variables()
+# initialize all variables has been deprecated
+init = tf.global_variables_initializer()
 
 # Launch the graph
 with tf.Session() as sess:
