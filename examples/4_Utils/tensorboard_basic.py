@@ -52,18 +52,18 @@ with tf.name_scope('Accuracy'):
 init = tf.initialize_all_variables()
 
 # Create a summary to monitor cost tensor
-tf.scalar_summary("loss", cost)
+tf.summary.scalar("loss", cost)
 # Create a summary to monitor accuracy tensor
-tf.scalar_summary("accuracy", acc)
+tf.summary.scalar("accuracy", acc)
 # Merge all summaries into a single op
-merged_summary_op = tf.merge_all_summaries()
+merged_summary_op = tf.summary.merge_all()
 
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
 
     # op to write logs to Tensorboard
-    summary_writer = tf.train.SummaryWriter(logs_path, graph=tf.get_default_graph())
+    summary_writer = tf.summary.FileWriter(logs_path, graph=tf.get_default_graph())
 
     # Training cycle
     for epoch in range(training_epochs):

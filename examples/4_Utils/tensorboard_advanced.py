@@ -41,12 +41,12 @@ def multilayer_perceptron(x, weights, biases):
     layer_1 = tf.add(tf.matmul(x, weights['w1']), biases['b1'])
     layer_1 = tf.nn.relu(layer_1)
     # Create a summary to visualize the first layer ReLU activation
-    tf.histogram_summary("relu1", layer_1)
+    tf.summary.histogram("relu1", layer_1)
     # Hidden layer with RELU activation
     layer_2 = tf.add(tf.matmul(layer_1, weights['w2']), biases['b2'])
     layer_2 = tf.nn.relu(layer_2)
     # Create another summary to visualize the second layer ReLU activation
-    tf.histogram_summary("relu2", layer_2)
+    tf.summary.histogram("relu2", layer_2)
     # Output layer
     out_layer = tf.add(tf.matmul(layer_2, weights['w3']), biases['b3'])
     return out_layer
@@ -91,24 +91,24 @@ with tf.name_scope('Accuracy'):
 init = tf.initialize_all_variables()
 
 # Create a summary to monitor cost tensor
-tf.scalar_summary("loss", loss)
+tf.summary.scalar("loss", loss)
 # Create a summary to monitor accuracy tensor
-tf.scalar_summary("accuracy", acc)
+tf.summary.scalar("accuracy", acc)
 # Create summaries to visualize weights
 for var in tf.trainable_variables():
-    tf.histogram_summary(var.name, var)
+    tf.summary.histogram(var.name, var)
 # Summarize all gradients
 for grad, var in grads:
-    tf.histogram_summary(var.name + '/gradient', grad)
+    tf.summary.histogram(var.name + '/gradient', grad)
 # Merge all summaries into a single op
-merged_summary_op = tf.merge_all_summaries()
+merged_summary_op = tf.summary.merge_all()
 
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
 
     # op to write logs to Tensorboard
-    summary_writer = tf.train.SummaryWriter(logs_path,
+    summary_writer = tf.summary.FileWriter(logs_path,
                                             graph=tf.get_default_graph())
 
     # Training cycle

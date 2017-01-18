@@ -11,7 +11,7 @@ from __future__ import print_function
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 import tensorflow as tf
 
@@ -60,11 +60,11 @@ biases = {
 pred = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # 'Saver' op to save and restore all the variables
 saver = tf.train.Saver()

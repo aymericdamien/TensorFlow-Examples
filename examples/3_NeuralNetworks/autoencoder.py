@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+mnist = input_data.read_data_sets("MNIST_data", one_hot=True)
 
 # Parameters
 learning_rate = 0.01
@@ -83,7 +83,7 @@ cost = tf.reduce_mean(tf.pow(y_true - y_pred, 2))
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(cost)
 
 # Initializing the variables
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # Launch the graph
 with tf.Session() as sess:

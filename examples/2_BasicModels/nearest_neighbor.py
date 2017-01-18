@@ -26,14 +26,14 @@ xte = tf.placeholder("float", [784])
 
 # Nearest Neighbor calculation using L1 Distance
 # Calculate L1 Distance
-distance = tf.reduce_sum(tf.abs(tf.add(xtr, tf.neg(xte))), reduction_indices=1)
+distance = tf.reduce_sum(tf.abs(tf.add(xtr, tf.negative(xte))), reduction_indices=1)
 # Prediction: Get min distance index (Nearest neighbor)
 pred = tf.arg_min(distance, 0)
 
 accuracy = 0.
 
 # Initializing the variables
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # Launch the graph
 with tf.Session() as sess:

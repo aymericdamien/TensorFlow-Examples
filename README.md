@@ -98,7 +98,7 @@ The following examples are coming from [TFLearn](https://github.com/tflearn/tfle
 
 ## Dependencies
 ```
-tensorflow
+tensorflow 1.0alpha
 numpy
 matplotlib
 cuda
