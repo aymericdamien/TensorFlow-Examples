@@ -33,7 +33,7 @@ pred = tf.arg_min(distance, 0)
 accuracy = 0.
 
 # Initializing the variables
-init = tf.global_variables_initializer()
+init = tf.initialize_all_variables()
 
 # Launch the graph
 with tf.Session() as sess:
