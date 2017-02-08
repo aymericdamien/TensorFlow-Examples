@@ -41,7 +41,7 @@ cost = tf.reduce_sum(tf.pow(pred-Y, 2))/(2*n_samples)
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
 # Initializing the variables
-init = tf.global_variables_initializer()
+init = tf.initialize_all_variables()
 
 # Launch the graph
 with tf.Session() as sess:
