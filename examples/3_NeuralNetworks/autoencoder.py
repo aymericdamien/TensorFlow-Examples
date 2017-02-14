@@ -95,16 +95,6 @@ with tf.Session() as sess:
     # Compare original images with their reconstructions before training
     fig, big_axes = plt.subplots(figsize=(10.0, 6.0), nrows=3, ncols=1, sharey=True)
 
-    # Old working
-    # f, a = plt.subplots(3, 10, figsize=(10, 3))
-    # for i in range(examples_to_show):
-    #     a[0][i].imshow(np.reshape(mnist.test.images[i], (28, 28)))
-    #     a[0][i].set_xticks([])
-    #     a[0][i].set_yticks([])
-    #     a[1][i].imshow(np.reshape(encode_decode[i], (28, 28)))
-    #     a[1][i].set_xticks([])
-    #     a[1][i].set_yticks([])
-
     # Titles for plots
     titles = ['Images to be encoded', 'Decoded images before training', 'Decoded images after training']
     index = 0
@@ -150,14 +140,6 @@ with tf.Session() as sess:
     encode_decode = sess.run(
         y_pred, feed_dict={X: mnist.test.images[:examples_to_show]})
     # Compare original images with their reconstructions after training
-
-    # Old code
-    #for i in range(examples_to_show):
-    #    a[2][i].imshow(np.reshape(encode_decode[i], (28, 28)))
-    #    a[2][i].set_xticks([])
-    #    a[2][i].set_yticks([])
-    #f.show()
-
     # Plot decoded images after training
     for i in range(0, examples_to_show):
         ax = fig.add_subplot(3, examples_to_show, i+2*examples_to_show+1)
