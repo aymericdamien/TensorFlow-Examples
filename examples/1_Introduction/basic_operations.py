@@ -30,7 +30,7 @@ b = tf.placeholder(tf.int16)
 
 # Define some operations
 add = tf.add(a, b)
-mul = tf.mul(a, b)
+mul = tf.multiply(a, b)
 
 # Launch the default graph.
 with tf.Session() as sess:
