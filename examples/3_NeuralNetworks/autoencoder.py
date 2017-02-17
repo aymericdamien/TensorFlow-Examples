@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
+# MNIST image shape is 28x28
+image_size = 28
+
 # Parameters
 learning_rate = 0.01
 training_epochs = 20
@@ -29,7 +32,7 @@ examples_to_show = 10
 # Network Parameters
 n_hidden_1 = 256 # 1st layer num features
 n_hidden_2 = 128 # 2nd layer num features
-n_input = 784 # MNIST data input (img shape: 28*28)
+n_input = image_size*image_size # MNIST data input (img shape: 28*28)
 
 # tf Graph input (only pictures)
 X = tf.placeholder("float", [None, n_input])
@@ -85,6 +88,23 @@ optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(cost)
 # Initializing the variables
 init = tf.global_variables_initializer()
 
+# Compare original images with their reconstructions before training
+nrows = 3
+fig, big_axes = plt.subplots(figsize=(10.0, 6.0), nrows=nrows, ncols=1, sharey=True)
+
+# Titles for plots
+titles = ['Images to be encoded', 'Decoded images before training', 'Decoded images after training']
+
+
+def plotRow(figure, num_rows, num_show, shift, data):
+    # Add each image as a subplot and turn off x, y ticks
+    for i in range(0, examples_to_show):
+        ax = figure.add_subplot(num_rows, num_show, i+shift)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.imshow(np.reshape(data[i], (image_size, image_size)))
+
+
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
@@ -92,33 +112,23 @@ with tf.Session() as sess:
     # Applying encode and decode over test set before training
     encode_decode = sess.run(
        y_pred, feed_dict={X: mnist.test.images[:examples_to_show]})
-    # Compare original images with their reconstructions before training
-    fig, big_axes = plt.subplots(figsize=(10.0, 6.0), nrows=3, ncols=1, sharey=True)
 
-    # Titles for plots
-    titles = ['Images to be encoded', 'Decoded images before training', 'Decoded images after training']
+    # Create canvas to plot on
     index = 0
-    # Make big plots
     for row, big_ax in enumerate(big_axes, start=1):
         big_ax.set_title(titles[index], fontsize=12)
         index+=1
         big_ax.tick_params(labelcolor=(1., 1., 1., 0.0), top='off', bottom='off', left='off', right='off')
         # removes the white frame
         big_ax._frameon = False
-    # Add each image as a subplot and turn of x, y ticks
+
 
     # Plot images to be encoded
-    for i in range(0, examples_to_show):
-        ax = fig.add_subplot(3, examples_to_show, i+1)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.imshow(np.reshape(mnist.test.images[i], (28, 28)))
+    shift = 1
+    plotRow(fig, nrows, examples_to_show, shift, mnist.test.images)
     # Plot decoded images before training
-    for i in range(0, examples_to_show):
-        ax = fig.add_subplot(3, examples_to_show, i+11)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.imshow(np.reshape(encode_decode[i], (28, 28)))
+    shift += examples_to_show
+    plotRow(fig, nrows, examples_to_show, shift, encode_decode)
     # ==========================================================
 
     total_batch = int(mnist.train.num_examples/batch_size)
@@ -139,13 +149,11 @@ with tf.Session() as sess:
     # Applying encode and decode over test set after training
     encode_decode = sess.run(
         y_pred, feed_dict={X: mnist.test.images[:examples_to_show]})
-    # Compare original images with their reconstructions after training
+
     # Plot decoded images after training
-    for i in range(0, examples_to_show):
-        ax = fig.add_subplot(3, examples_to_show, i+2*examples_to_show+1)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.imshow(np.reshape(encode_decode[i], (28, 28)))
+    shift += examples_to_show
+    plotRow(fig, nrows, examples_to_show, shift, encode_decode)
+
     fig.show()
     fig.set_facecolor('w')
     # plt.tight_layout()
