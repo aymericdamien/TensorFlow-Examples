@@ -1,0 +1,5 @@
+
+.ipynb_checkpoints
+*.gz
+
+.DS_Store
