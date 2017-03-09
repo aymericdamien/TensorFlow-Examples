@@ -119,14 +119,14 @@ def dynamicRNN(x, seqlen, weights, biases):
     # Reshaping to (n_steps*batch_size, n_input)
     x = tf.reshape(x, [-1, 1])
     # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
-    x = tf.split(0, seq_max_len, x)
+    x = tf.split(axis=0, num_or_size_splits=seq_max_len, value=x)
 
     # Define a lstm cell with tensorflow
-    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(n_hidden)
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden)
 
     # Get lstm cell output, providing 'sequence_length' will perform dynamic
     # calculation.
-    outputs, states = tf.nn.rnn(lstm_cell, x, dtype=tf.float32,
+    outputs, states = tf.contrib.rnn.static_rnn(lstm_cell, x, dtype=tf.float32,
                                 sequence_length=seqlen)
 
     # When performing dynamic calculation, we must retrieve the last
@@ -138,7 +138,7 @@ def dynamicRNN(x, seqlen, weights, biases):
 
     # 'outputs' is a list of output at every timestep, we pack them in a Tensor
     # and change back dimension to [batch_size, n_step, n_input]
-    outputs = tf.pack(outputs)
+    outputs = tf.stack(outputs)
     outputs = tf.transpose(outputs, [1, 0, 2])
 
     # Hack to build the indexing and retrieve the right output.
@@ -154,7 +154,7 @@ def dynamicRNN(x, seqlen, weights, biases):
 pred = dynamicRNN(x, seqlen, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Evaluate model
