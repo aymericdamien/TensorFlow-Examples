@@ -71,7 +71,7 @@ with tf.name_scope('Model'):
 
 with tf.name_scope('Loss'):
     # Softmax Cross entropy (cost function)
-    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 
 with tf.name_scope('SGD'):
     # Gradient Descent
