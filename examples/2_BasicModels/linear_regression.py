@@ -38,7 +38,7 @@ pred = tf.add(tf.multiply(X, W), b)
 # Mean squared error
 cost = tf.reduce_sum(tf.pow(pred-Y, 2))/(2*n_samples)
 # Gradient descent
-optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
 init = tf.global_variables_initializer()
