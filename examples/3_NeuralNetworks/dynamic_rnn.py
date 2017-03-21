@@ -136,7 +136,7 @@ def dynamicRNN(x, seqlen, weights, biases):
     # a custom op that for each sample in batch size, get its length and
     # get the corresponding relevant output.
 
-    # 'outputs' is a list of output at every timestep, we pack them in a Tensor
+    # 'outputs' is a list of output at every timestep, we stack them in a Tensor
     # and change back dimension to [batch_size, n_step, n_input]
     outputs = tf.stack(outputs)
     outputs = tf.transpose(outputs, [1, 0, 2])
