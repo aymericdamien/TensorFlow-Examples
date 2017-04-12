@@ -1,5 +1,14 @@
-
-.ipynb_checkpoints
 *.gz
-
 .DS_Store
+.ipynb_checkpoints
+*.pyc
+__pycache__
+*.egg-info
+build/*
+dist/*
+*~
+.cache
+.coverage
+checkpoint
+htmlcov
+mnist
