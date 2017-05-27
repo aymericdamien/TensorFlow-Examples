@@ -1,11 +1,15 @@
-'''
-A Multilayer Perceptron implementation example using TensorFlow library.
-This example is using the MNIST database of handwritten digits
-(http://yann.lecun.com/exdb/mnist/)
+""" Neural Network.
+
+A Neural Network (Multilayer Perceptron) implementation example using
+TensorFlow library. This example is using the MNIST database of handwritten
+digits (http://yann.lecun.com/exdb/mnist/).
+
+Links:
+    [MNIST Dataset](http://yann.lecun.com/exdb/mnist/).
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
+"""
 
 from __future__ import print_function
 
@@ -22,27 +26,14 @@ batch_size = 100
 display_step = 1
 
 # Network Parameters
-n_hidden_1 = 256 # 1st layer number of features
-n_hidden_2 = 256 # 2nd layer number of features
+n_hidden_1 = 256 # 1st layer number of neurons
+n_hidden_2 = 256 # 2nd layer number of neurons
 n_input = 784 # MNIST data input (img shape: 28*28)
 n_classes = 10 # MNIST total classes (0-9 digits)
 
 # tf Graph input
 x = tf.placeholder("float", [None, n_input])
 y = tf.placeholder("float", [None, n_classes])
-
-
-# Create model
-def multilayer_perceptron(x, weights, biases):
-    # Hidden layer with RELU activation
-    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
-    # Hidden layer with RELU activation
-    layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
-    layer_2 = tf.nn.relu(layer_2)
-    # Output layer with linear activation
-    out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
-    return out_layer
 
 # Store layers weight & bias
 weights = {
@@ -56,17 +47,27 @@ biases = {
     'out': tf.Variable(tf.random_normal([n_classes]))
 }
 
+
+# Create model
+def neural_net(x):
+    # Hidden fully connected layer with 256 neurons
+    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+    # Hidden fully connected layer with 256 neurons
+    layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+    # Output fully connected layer with a neuron for each class
+    out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+    return out_layer
+
 # Construct model
-pred = multilayer_perceptron(x, weights, biases)
+logits = neural_net(x)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
 init = tf.global_variables_initializer()
 
-# Launch the graph
 with tf.Session() as sess:
     sess.run(init)
 
@@ -89,6 +90,7 @@ with tf.Session() as sess:
     print("Optimization Finished!")
 
     # Test model
+    pred = tf.nn.softmax(logits)  # Apply softmax to logits
     correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
     # Calculate accuracy
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))

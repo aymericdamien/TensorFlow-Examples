@@ -1,6 +1,9 @@
 """ Auto Encoder Example.
 Using an auto encoder on MNIST handwritten digits.
 
+This example is using TensorFlow layers, see 'auto_encoder_raw' example
+for a raw implementation with variables.
+
 References:
     Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. "Gradient-based
     learning applied to document recognition." Proceedings of the IEEE,
@@ -37,22 +40,39 @@ n_input = 784 # MNIST data input (img shape: 28*28)
 # tf Graph input (only pictures)
 X = tf.placeholder("float", [None, n_input])
 
+weights = {
+    'encoder_h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
+    'encoder_h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
+    'decoder_h1': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_1])),
+    'decoder_h2': tf.Variable(tf.random_normal([n_hidden_1, n_input])),
+}
+biases = {
+    'encoder_b1': tf.Variable(tf.random_normal([n_hidden_1])),
+    'encoder_b2': tf.Variable(tf.random_normal([n_hidden_2])),
+    'decoder_b1': tf.Variable(tf.random_normal([n_hidden_1])),
+    'decoder_b2': tf.Variable(tf.random_normal([n_input])),
+}
+
 
 # Building the encoder
 def encoder(x):
-    # Encoder fully connected layer with 256 neurons
-    layer_1 = tf.layers.dense(x, n_hidden_1)
-    # Encoder fully connected layer with 128 neurons
-    layer_2 = tf.layers.dense(layer_1, n_hidden_2)
+    # Encoder Hidden layer with sigmoid activation #1
+    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['encoder_h1']),
+                                   biases['encoder_b1']))
+    # Decoder Hidden layer with sigmoid activation #2
+    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['encoder_h2']),
+                                   biases['encoder_b2']))
     return layer_2
 
 
 # Building the decoder
 def decoder(x):
-    # Decoder fully connected layer with 256 neurons
-    layer_1 = tf.layers.dense(x, n_hidden_1)
-    # Decoder fully connected layer with 128 neurons
-    layer_2 = tf.layers.dense(layer_1, n_hidden_2)
+    # Encoder Hidden layer with sigmoid activation #1
+    layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['decoder_h1']),
+                                   biases['decoder_b1']))
+    # Decoder Hidden layer with sigmoid activation #2
+    layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['decoder_h2']),
+                                   biases['decoder_b2']))
     return layer_2
 
 # Construct model
