@@ -26,7 +26,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Training Params
-n_steps = 20000
+num_steps = 20000
 batch_size = 32
 
 # Network Params
@@ -124,7 +124,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     # Training
-    for i in range(1, n_steps+1):
+    for i in range(1, num_steps+1):
 
         # Prepare Input Data
         # Get the next batch of MNIST data (only images are needed, not labels)

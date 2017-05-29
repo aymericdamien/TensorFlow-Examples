@@ -6,12 +6,15 @@ MNIST handwritten digits are used as training examples.
 References:
     - Auto-Encoding Variational Bayes The International Conference on Learning
     Representations (ICLR), Banff, 2014. D.P. Kingma, M. Welling
+    - Understanding the difficulty of training deep feedforward neural networks.
+    X Glorot, Y Bengio. Aistats 9, 249-256
     - Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. "Gradient-based
     learning applied to document recognition." Proceedings of the IEEE,
     86(11):2278-2324, November 1998.
 
 Links:
     - [VAE Paper] https://arxiv.org/abs/1312.6114
+    - [Xavier Glorot Init](www.cs.cmu.edu/~bhiksha/courses/deeplearning/Fall.../AISTATS2010_Glorot.pdf).
     - [MNIST Dataset] http://yann.lecun.com/exdb/mnist/
 
 Author: Aymeric Damien
@@ -30,15 +33,15 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Parameters
 learning_rate = 0.001
-n_steps = 20000
-batch_size = 32
+num_steps = 30000
+batch_size = 64
 
 # Network Parameters
 image_dim = 784 # MNIST images are 28x28 pixels
-hidden_dim = 256
+hidden_dim = 512
 latent_dim = 2
 
-# A custom initialization (see Xavier glorot init)
+# A custom initialization (see Xavier Glorot init)
 def glorot_init(shape):
     return tf.random_normal(shape=shape, stddev=1. / tf.sqrt(shape[0] / 2.))
 
@@ -61,7 +64,7 @@ biases = {
 # Building the encoder
 input_image = tf.placeholder(tf.float32, shape=[None, image_dim])
 encoder = tf.matmul(input_image, weights['encoder_h1']) + biases['encoder_b1']
-encoder = tf.nn.relu(encoder)
+encoder = tf.nn.tanh(encoder)
 z_mean = tf.matmul(encoder, weights['z_mean']) + biases['z_mean']
 z_std = tf.matmul(encoder, weights['z_std']) + biases['z_std']
 
@@ -72,7 +75,7 @@ z = z_mean + tf.exp(z_std / 2) * eps
 
 # Building the decoder (with scope to re-use these layers later)
 decoder = tf.matmul(z, weights['decoder_h1']) + biases['decoder_b1']
-decoder = tf.nn.relu(decoder)
+decoder = tf.nn.tanh(decoder)
 decoder = tf.matmul(decoder, weights['decoder_out']) + biases['decoder_out']
 decoder = tf.nn.sigmoid(decoder)
 
@@ -99,7 +102,7 @@ with tf.Session() as sess:
     sess.run(init)
 
     # Training
-    for i in range(1, n_steps+1):
+    for i in range(1, num_steps+1):
         # Prepare Data
         # Get the next batch of MNIST data (only images are needed, not labels)
         batch_x, _ = mnist.train.next_batch(batch_size)
@@ -115,24 +118,24 @@ with tf.Session() as sess:
     noise_input = tf.placeholder(tf.float32, shape=[None, latent_dim])
     # Rebuild the decoder to create image from noise
     decoder = tf.matmul(noise_input, weights['decoder_h1']) + biases['decoder_b1']
-    decoder = tf.nn.relu(decoder)
+    decoder = tf.nn.tanh(decoder)
     decoder = tf.matmul(decoder, weights['decoder_out']) + biases['decoder_out']
     decoder = tf.nn.sigmoid(decoder)
 
     # Building a manifold of generated digits
-    n = 15  # Figure row size
-    figure = np.zeros((28 * n, 28 * n))
-    # Random normal distributions to feed network with
-    x_axis = norm.ppf(np.linspace(0., 1., n))
-    y_axis = norm.ppf(np.linspace(0., 1., n))
+    n = 20
+    x_axis = np.linspace(-3, 3, n)
+    y_axis = np.linspace(-3, 3, n)
 
-    for i, x in enumerate(x_axis):
-        for j, y in enumerate(y_axis):
-            samples = np.array([[x, y]])
-            x_reconstructed = sess.run(decoder, feed_dict={noise_input: samples})
-            digit = np.array(x_reconstructed[0]).reshape(28, 28)
-            figure[i * 28: (i + 1) * 28, j * 28: (j + 1) * 28] = digit
+    canvas = np.empty((28 * n, 28 * n))
+    for i, yi in enumerate(x_axis):
+        for j, xi in enumerate(y_axis):
+            z_mu = np.array([[xi, yi]] * batch_size)
+            x_mean = sess.run(decoder, feed_dict={noise_input: z_mu})
+            canvas[(n - i - 1) * 28:(n - i) * 28, j * 28:(j + 1) * 28] = \
+            x_mean[0].reshape(28, 28)
 
-    plt.figure(figsize=(10, 10))
-    plt.imshow(figure, cmap='Greys_r')
+    plt.figure(figsize=(8, 10))
+    Xi, Yi = np.meshgrid(x_axis, y_axis)
+    plt.imshow(canvas, origin="upper", cmap="gray")
     plt.show()
