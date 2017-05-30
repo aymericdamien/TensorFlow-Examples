@@ -4,6 +4,8 @@ Implement K-Means algorithm with TensorFlow, and apply it to classify
 handwritten digit images. This example is using the MNIST database of
 handwritten digits as training samples (http://yann.lecun.com/exdb/mnist/).
 
+Note: This example requires TensorFlow v1.1.0 or over.
+
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
@@ -21,11 +23,12 @@ os.environ["CUDA_VISIBLE_DEVICES"] = ""
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+full_data_x = mnist.train.images
 
 # Parameters
-num_steps = 500 # Total steps to train
+num_steps = 50 # Total steps to train
 batch_size = 1024 # The number of samples per batch
-k = 20 # The number of clusters
+k = 25 # The number of clusters
 num_classes = 10 # The 10 digits
 num_features = 784 # Each image is 28x28 pixels
 
@@ -35,10 +38,12 @@ X = tf.placeholder(tf.float32, shape=[None, num_features])
 Y = tf.placeholder(tf.float32, shape=[None, num_classes])
 
 # K-Means Parameters
-kmeans = KMeans(inputs=X, num_clusters=k, distance_metric='cosine')
+kmeans = KMeans(inputs=X, num_clusters=k, distance_metric='cosine',
+                use_mini_batch=True)
 
 # Build KMeans graph
-all_scores, cluster_idx, scores, train_op = kmeans.training_graph()
+(all_scores, cluster_idx, scores, cluster_centers_initialized, init_op,
+train_op) = kmeans.training_graph()
 cluster_idx = cluster_idx[0] # fix for cluster_idx being a tuple
 avg_distance = tf.reduce_mean(scores)
 
@@ -47,45 +52,28 @@ init_vars = tf.global_variables_initializer()
 
 # Start TensorFlow session
 sess = tf.Session()
-sess.run(init_vars, feed_dict={X: mnist.train.images})
+sess.run(init_vars, feed_dict={X: full_data_x})
+sess.run(init_op, feed_dict={X: full_data_x})
 
 # Training
-for i in range(1):
+for i in range(1, num_steps + 1):
     _, d, idx = sess.run([train_op, avg_distance, cluster_idx],
-                         feed_dict={X: mnist.train.images})
-    print("Distance:", d)
+                         feed_dict={X: full_data_x})
+    if i % 10 == 0 or i == 1:
+        print("Step %i, Avg Distance: %f" % (i, d))
 
 # Assign a label to each centroid
-# counts = np.zeros(shape=(k, num_classes))
-# for i in range(len(idx)):
-#     counts[idx[i]] += mnist.train.labels[i]
-# centroid_labels = [np.argmax(c) for c in counts]
-# centroid_labels = tf.convert_to_tensor(centroid_labels)
+counts = np.zeros(shape=(k, num_classes))
+for i in range(len(idx)):
+    counts[idx[i]] += mnist.train.labels[i]
+centroid_labels = [np.argmax(c) for c in counts]
+centroid_labels = tf.convert_to_tensor(centroid_labels)
 
-#counts = tf.Variable(tf.zeros(shape=[k, num_classes]))
-# counts = tf.one_hot(cluster_idx, 2) * Y
-# centroid_labels = tf.argmax(counts, 1)
-#
-# # Evaluation ops
-# k_label = tf.nn.embedding_lookup(centroid_labels, cluster_idx)
-# correct_prediction = tf.equal(k_label, tf.cast(tf.argmax(Y, 1), tf.int32))
-# accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-#
-# # Test Model
-# test_x, test_y = mnist.test.images, mnist.test.labels
-# print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: test_x, Y: test_y}))
+# Evaluation ops
+k_label = tf.nn.embedding_lookup(centroid_labels, cluster_idx)
+correct_prediction = tf.equal(k_label, tf.cast(tf.argmax(Y, 1), tf.int32))
+accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-# # Training
-# for i in range(1, num_steps + 1):
-#     # Prepare Data
-#     # Get the next batch of MNIST data (only images are needed, not labels)
-#     batch_x, batch_y = mnist.train.next_batch(batch_size)
-#     _, l = sess.run([train_op, loss_op], feed_dict={X: batch_x, Y: batch_y})
-#     if i % 50 == 0 or i == 1:
-#         acc = sess.run(accuracy_op, feed_dict={X: batch_x, Y: batch_y})
-#         print('Step %i, Loss: %f, Acc: %f' % (i, l, acc))
-
-# # Test Model
-# test_x, test_y = mnist.test.images, mnist.test.labels
-# print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: test_x, Y: test_y}))
-#
+# Test Model
+test_x, test_y = mnist.test.images, mnist.test.labels
+print("Test Accuracy:", sess.run(accuracy_op, feed_dict={X: test_x, Y: test_y}))
