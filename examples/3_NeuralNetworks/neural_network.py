@@ -35,8 +35,8 @@ n_input = 784 # MNIST data input (img shape: 28*28)
 n_classes = 10 # MNIST total classes (0-9 digits)
 
 # tf Graph input
-x = tf.placeholder("float", [None, n_input])
-y = tf.placeholder("float", [None, n_classes])
+X = tf.placeholder("float", [None, n_input])
+Y = tf.placeholder("float", [None, n_classes])
 
 
 # Create model
@@ -51,11 +51,13 @@ def neural_net(x):
 
 
 # Create a graph for training
-logits = neural_net(x)
+logits = neural_net(X)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+    logits=logits, labels=Y))
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+train_op = optimizer.minimize(loss_op)
 
 # Initializing the variables
 init = tf.global_variables_initializer()
@@ -71,8 +73,8 @@ with tf.Session() as sess:
         for i in range(total_batch):
             batch_x, batch_y = mnist.train.next_batch(batch_size)
             # Run optimization op (backprop) and cost op (to get loss value)
-            _, c = sess.run([optimizer, cost], feed_dict={x: batch_x,
-                                                          y: batch_y})
+            _, c = sess.run([train_op, loss_op], feed_dict={X: batch_x,
+                                                            Y: batch_y})
             # Compute average loss
             avg_cost += c / total_batch
         # Display logs per epoch step
@@ -82,7 +84,7 @@ with tf.Session() as sess:
 
     # Test model
     pred = tf.nn.softmax(logits) # Apply softmax to logits
-    correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+    correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(Y, 1))
     # Calculate accuracy
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print("Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels}))
+    print("Accuracy:", accuracy.eval({X: mnist.test.images, Y: mnist.test.labels}))

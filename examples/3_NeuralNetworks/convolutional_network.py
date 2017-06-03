@@ -30,8 +30,8 @@ n_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
 # tf Graph input
-x = tf.placeholder(tf.float32, [None, n_input])
-y = tf.placeholder(tf.float32, [None, n_classes])
+X = tf.placeholder(tf.float32, [None, n_input])
+Y = tf.placeholder(tf.float32, [None, n_classes])
 
 
 # Create model
@@ -74,14 +74,15 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
 # need to create 2 distinct computation graphs that share the same weights.
 
 # Create a graph for training
-logits_train = conv_net(x, n_classes, dropout, reuse=False, is_training=True)
+logits_train = conv_net(X, n_classes, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights
-logits_test = conv_net(x, n_classes, dropout, reuse=True, is_training=False)
+logits_test = conv_net(X, n_classes, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-    logits=logits_train, labels=y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+    logits=logits_train, labels=Y))
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+train_op = optimizer.minimize(loss_op)
 
 # Evaluate model (with test logits, for dropout to be disabled)
 correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(y, 1))
@@ -98,11 +99,11 @@ with tf.Session() as sess:
     while step * batch_size < training_iters:
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
-        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y})
+        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})
         if step % display_step == 0:
             # Calculate batch loss and accuracy
-            loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x,
-                                                              y: batch_y})
+            loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,
+                                                                 Y: batch_y})
             print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
                   "{:.5f}".format(acc))
@@ -111,5 +112,5 @@ with tf.Session() as sess:
 
     # Calculate accuracy for 256 mnist test images
     print("Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={x: mnist.test.images[:256],
-                                      y: mnist.test.labels[:256]}))
+        sess.run(accuracy, feed_dict={X: mnist.test.images[:256],
+                                      Y: mnist.test.labels[:256]}))

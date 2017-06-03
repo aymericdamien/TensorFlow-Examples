@@ -63,15 +63,20 @@ for i in range(1, num_steps + 1):
         print("Step %i, Avg Distance: %f" % (i, d))
 
 # Assign a label to each centroid
+# Count total number of labels per centroid, using the label of each training
+# sample to their closest centroid (given by 'idx')
 counts = np.zeros(shape=(k, num_classes))
 for i in range(len(idx)):
     counts[idx[i]] += mnist.train.labels[i]
-centroid_labels = [np.argmax(c) for c in counts]
-centroid_labels = tf.convert_to_tensor(centroid_labels)
+# Assign the most frequent label to the centroid
+labels_map = [np.argmax(c) for c in counts]
+labels_map = tf.convert_to_tensor(labels_map)
 
 # Evaluation ops
-k_label = tf.nn.embedding_lookup(centroid_labels, cluster_idx)
-correct_prediction = tf.equal(k_label, tf.cast(tf.argmax(Y, 1), tf.int32))
+# Lookup: centroid_id -> label
+cluster_label = tf.nn.embedding_lookup(labels_map, cluster_idx)
+# Compute accuracy
+correct_prediction = tf.equal(cluster_label, tf.cast(tf.argmax(Y, 1), tf.int32))
 accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # Test Model

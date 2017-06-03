@@ -27,8 +27,8 @@ n_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
 # tf Graph input
-x = tf.placeholder(tf.float32, [None, n_input])
-y = tf.placeholder(tf.float32, [None, n_classes])
+X = tf.placeholder(tf.float32, [None, n_input])
+Y = tf.placeholder(tf.float32, [None, n_classes])
 keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
 
 
@@ -95,14 +95,17 @@ biases = {
 }
 
 # Construct model
-pred = conv_net(x, weights, biases, keep_prob)
+pred = conv_net(X, weights, biases, keep_prob)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+    logits=pred, labels=Y))
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+train_op = optimizer.minimize(loss_op)
+
 
 # Evaluate model
-correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
+correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initializing the variables
@@ -115,13 +118,13 @@ with tf.Session() as sess:
     while step * batch_size < training_iters:
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
-        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y,
-                                       keep_prob: dropout})
+        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y,
+                                      keep_prob: dropout})
         if step % display_step == 0:
             # Calculate batch loss and accuracy
-            loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x,
-                                                              y: batch_y,
-                                                              keep_prob: 1.})
+            loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,
+                                                                 Y: batch_y,
+                                                                 keep_prob: 1.})
             print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
                   "{:.5f}".format(acc))
@@ -130,6 +133,6 @@ with tf.Session() as sess:
 
     # Calculate accuracy for 256 mnist test images
     print("Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={x: mnist.test.images[:256],
-                                      y: mnist.test.labels[:256],
+        sess.run(accuracy, feed_dict={X: mnist.test.images[:256],
+                                      Y: mnist.test.labels[:256],
                                       keep_prob: 1.}))
