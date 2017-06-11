@@ -1,4 +1,5 @@
-'''
+""" Convolutional Neural Network.
+
 A Convolutional Network implementation example using TensorFlow library.
 This example is using the MNIST database of handwritten digits
 (http://yann.lecun.com/exdb/mnist/)
@@ -8,7 +9,7 @@ for a raw implementation with variables.
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
+"""
 
 from __future__ import print_function
 
@@ -85,7 +86,7 @@ optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
 # Evaluate model (with test logits, for dropout to be disabled)
-correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(y, 1))
+correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initializing the variables
