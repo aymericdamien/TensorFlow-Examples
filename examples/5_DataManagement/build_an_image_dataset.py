@@ -1,6 +1,6 @@
 """ Build an Image Dataset in TensorFlow.
 
-For this example, you need to make your own set of images.
+For this example, you need to make your own set of images (JPEG).
 We will show 2 different ways to build that dataset:
 
 - From a root folder, that will have a sub-folder containing images for each class
@@ -37,10 +37,11 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 from __future__ import print_function
 
 import tensorflow as tf
+import os
 
-# Dataset Parameters
+# Dataset Parameters - CHANGE HERE
 MODE = 'folder' # or 'file', if you choose a plain text file (see above).
-DATASET_PATH = '/dataset/path' # CHANGE HERE, the dataset file or root folder path.
+DATASET_PATH = '/path/to/dataset/' # the dataset file or root folder path.
 
 # Image Parameters
 N_CLASSES = 2 # CHANGE HERE, total number of classes
@@ -48,45 +49,63 @@ IMG_HEIGHT = 64 # CHANGE HERE, the image height to be resized to
 IMG_WIDTH = 64 # CHANGE HERE, the image width to be resized to
 CHANNELS = 3 # The 3 color channels, change to 1 if grayscale
 
-# Testing (Optional)
-TEST_IMAGE = '' # CHANGE HERE, give a path to an image to test the model
-
 
 # Reading the dataset
 # 2 modes: 'file' or 'folder'
 def read_images(dataset_path, mode, batch_size):
+    imagepaths, labels = list(), list()
     if mode == 'file':
         # Read dataset file
         data = open(dataset_path, 'r').read().splitlines()
-        # Collect all paths and labels
-        imagepaths, labels = list(), list()
         for d in data:
             imagepaths.append(d.split(' ')[0])
             labels.append(int(d.split(' ')[1]))
     elif mode == 'folder':
-        pass
+        # An ID will be affected to each sub-folders by alphabetical order
+        label = 0
+        # List the directory
+        try:  # Python 2
+            classes = sorted(os.walk(dataset_path).next()[1])
+        except Exception:  # Python 3
+            classes = sorted(os.walk(dataset_path).__next__()[1])
+        # List each sub-directory (the classes)
+        for c in classes:
+            c_dir = os.path.join(dataset_path, c)
+            try:  # Python 2
+                walk = os.walk(c_dir).next()
+            except Exception:  # Python 3
+                walk = os.walk(c_dir).__next__()
+            # Add each image to the training set
+            for sample in walk[2]:
+                # Only keeps jpeg images
+                if sample.endswith('.jpg') or sample.endswith('.jpeg'):
+                    imagepaths.append(os.path.join(c_dir, sample))
+                    labels.append(label)
+            label += 1
     else:
         raise Exception("Unknown mode.")
+
     # Convert to Tensor
     imagepaths = tf.convert_to_tensor(imagepaths, dtype=tf.string)
     labels = tf.convert_to_tensor(labels, dtype=tf.int32)
-    # Build a TF Queue
+    # Build a TF Queue, shuffle data
     image, label = tf.train.slice_input_producer([imagepaths, labels],
                                                  shuffle=True)
+
     # Read images from disk
     image = tf.read_file(image)
-    image = tf.image.decode_image(image, channels=CHANNELS)
+    image = tf.image.decode_jpeg(image, channels=CHANNELS)
 
     # Resize images to a common size
-    image = tf.image.resize_images(tf.cast(image, tf.float32), IMG_HEIGHT, IMG_WIDTH)
+    image = tf.image.resize_images(image, [IMG_HEIGHT, IMG_WIDTH])
 
     # Normalize
     image = image * 1.0/127.5 - 1.0
 
     # Create batches
-    X, Y = tf.train.shuffle_batch([image, label], batch_size=batch_size,
-                                  capacity=batch_size * 8,
-                                  min_after_dequeue=batch_size * 2)
+    X, Y = tf.train.batch([image, label], batch_size=batch_size,
+                          capacity=batch_size * 8,
+                          num_threads=4)
 
     return X, Y
 
@@ -97,7 +116,7 @@ def read_images(dataset_path, mode, batch_size):
 
 # Parameters
 learning_rate = 0.001
-num_steps = 1000
+num_steps = 1
 batch_size = 128
 display_step = 10
 
@@ -106,6 +125,7 @@ dropout = 0.75 # Dropout, probability to keep units
 
 # Build the data input
 X, Y = read_images(DATASET_PATH, MODE, batch_size)
+
 
 # Create model
 def conv_net(x, n_classes, dropout, reuse, is_training):
@@ -148,17 +168,20 @@ logits_train = conv_net(X, N_CLASSES, dropout, reuse=False, is_training=True)
 logits_test = conv_net(X, N_CLASSES, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
     logits=logits_train, labels=Y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
 # Evaluate model (with test logits, for dropout to be disabled)
-correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(Y, 1))
+correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initializing the variables
 init = tf.global_variables_initializer()
+
+# Saver object
+saver = tf.train.Saver()
 
 # Launch the graph
 with tf.Session() as sess:
@@ -184,7 +207,5 @@ with tf.Session() as sess:
         step += 1
     print("Optimization Finished!")
 
-    # # Calculate accuracy for 256 mnist test images
-    # print("Testing Accuracy:", \
-    #     sess.run(accuracy, feed_dict={X: mnist.test.images[:256],
-    #                                   Y: mnist.test.labels[:256]}))
+    # Save your model
+    saver.save(sess, 'my_tf_model')
