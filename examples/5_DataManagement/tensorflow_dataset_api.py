@@ -1,21 +1,16 @@
-""" Convolutional Neural Network.
+""" TensorFlow Dataset API.
 
-A Convolutional Network implementation example using TensorFlow library.
-This example is using the MNIST database of handwritten digits
-(http://yann.lecun.com/exdb/mnist/)
-
-This example is using TensorFlow layers, see 'convolutional_network_raw' example
-for a raw implementation with variables.
+In this example, we will show how to load numpy array data into the new 
+TensorFlow 'Dataset' API. The Dataset API implements an optimized data pipeline
+with queues, that make data processing and training faster (especially on GPU).
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
-from __future__ import print_function
-
 import tensorflow as tf
 
-# Import MNIST data
+# Import MNIST data (Numpy format)
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
@@ -30,10 +25,31 @@ n_input = 784 # MNIST data input (img shape: 28*28)
 n_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
-# tf Graph input
-X = tf.placeholder(tf.float32, [None, n_input])
-Y = tf.placeholder(tf.float32, [None, n_classes])
+sess = tf.Session()
 
+# Create a dataset tensor from the images and the labels
+dataset = tf.contrib.data.Dataset.from_tensor_slices(
+    (mnist.train.images, mnist.train.labels))
+# Create batches of data
+dataset = dataset.batch(batch_size)
+# Create an iterator, to go over the dataset
+iterator = dataset.make_initializable_iterator()
+# It is better to use 2 placeholders, to avoid to load all data into memory,
+# and avoid the 2Gb restriction length of a tensor.
+_data = tf.placeholder(tf.float32, [None, n_input])
+_labels = tf.placeholder(tf.float32, [None, n_classes])
+# Initialize the iterator
+sess.run(iterator.initializer, feed_dict={_data: mnist.train.images,
+                                          _labels: mnist.train.labels})
+
+# Neural Net Input
+X, Y = iterator.get_next()
+
+
+# -----------------------------------------------
+# THIS IS A CLASSIC CNN (see examples, section 3)
+# -----------------------------------------------
+# Note that a few elements have changed (usage of sess run).
 
 # Create model
 def conv_net(x, n_classes, dropout, reuse, is_training):
@@ -94,25 +110,18 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 init = tf.global_variables_initializer()
 
 # Launch the graph
-with tf.Session() as sess:
-    sess.run(init)
-    step = 1
-    # Keep training until reach max iterations
-    while step * batch_size < training_iters:
-        batch_x, batch_y = mnist.train.next_batch(batch_size)
-        # Run optimization op (backprop)
-        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})
-        if step % display_step == 0:
-            # Calculate batch loss and accuracy
-            loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,
-                                                                 Y: batch_y})
-            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc))
-        step += 1
-    print("Optimization Finished!")
-
-    # Calculate accuracy for 256 mnist test images
-    print("Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={X: mnist.test.images[:256],
-                                      Y: mnist.test.labels[:256]}))
+sess.run(init)
+step = 1
+# Keep training until reach max iterations
+while step * batch_size < training_iters:
+    # Run optimization op (backprop)
+    # No need for using feed dicts!
+    sess.run(train_op)
+    if step % display_step == 0:
+        # Calculate batch loss and accuracy
+        loss, acc = sess.run([loss_op, accuracy])
+        print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+              "{:.6f}".format(loss) + ", Training Accuracy= " + \
+              "{:.5f}".format(acc))
+    step += 1
+print("Optimization Finished!")
