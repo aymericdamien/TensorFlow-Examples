@@ -32,6 +32,7 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 # Training Params
 num_steps = 30000
 batch_size = 32
+learning_rate = 0.001
 
 # Network Params
 image_dim = 784 # 28*28 pixels
@@ -82,7 +83,7 @@ def discriminator(x):
 # Build Networks
 # Network Inputs
 gen_input = tf.placeholder(tf.float32, shape=[None, noise_dim], name='input_noise')
-disc_input = tf.placeholder(tf.float32, shape=[None, 784], name='disc_input')
+disc_input = tf.placeholder(tf.float32, shape=[None, image_dim], name='disc_input')
 
 # Build Generator Network
 gen_sample = generator(gen_input)
@@ -96,8 +97,8 @@ gen_loss = -tf.reduce_mean(tf.log(disc_fake))
 disc_loss = -tf.reduce_mean(tf.log(disc_real) + tf.log(1. - disc_fake))
 
 # Build Optimizers
-optimizer_gen = tf.train.AdamOptimizer(learning_rate=0.001)
-optimizer_disc = tf.train.AdamOptimizer(learning_rate=0.001)
+optimizer_gen = tf.train.AdamOptimizer(learning_rate=learning_rate)
+optimizer_disc = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
 # Training Variables for each optimizer
 # By default in TensorFlow, all variables are updated by each optimizer, so we
