@@ -1,17 +1,17 @@
 """ Convolutional Neural Network.
 
-A Convolutional Network implementation example using TensorFlow library.
+Build and train a convolutional neural network with TensorFlow.
 This example is using the MNIST database of handwritten digits
 (http://yann.lecun.com/exdb/mnist/)
 
-This example is using TensorFlow layers, see 'convolutional_network_raw' example
-for a raw implementation with variables.
+This example is using TensorFlow layers API, see 'convolutional_network_raw' 
+example for a raw implementation with variables.
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
 
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 import tensorflow as tf
 
@@ -19,20 +19,20 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
-# Parameters
+# Training Parameters
 learning_rate = 0.001
-training_iters = 200000
+num_steps = 200
 batch_size = 128
 display_step = 10
 
 # Network Parameters
-n_input = 784 # MNIST data input (img shape: 28*28)
-n_classes = 10 # MNIST total classes (0-9 digits)
+num_input = 784 # MNIST data input (img shape: 28*28)
+num_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
 # tf Graph input
-X = tf.placeholder(tf.float32, [None, n_input])
-Y = tf.placeholder(tf.float32, [None, n_classes])
+X = tf.placeholder(tf.float32, [None, num_input])
+Y = tf.placeholder(tf.float32, [None, num_classes])
 
 
 # Create model
@@ -75,10 +75,10 @@ def conv_net(x, n_classes, dropout, reuse, is_training):
 # need to create 2 distinct computation graphs that share the same weights.
 
 # Create a graph for training
-logits_train = conv_net(X, n_classes, dropout, reuse=False, is_training=True)
+logits_train = conv_net(X, num_classes, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights, but has
 # different behavior for 'dropout' (not applied).
-logits_test = conv_net(X, n_classes, dropout, reuse=True, is_training=False)
+logits_test = conv_net(X, num_classes, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
@@ -93,12 +93,11 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 # Initializing the variables
 init = tf.global_variables_initializer()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
     sess.run(init)
-    step = 1
-    # Keep training until reach max iterations
-    while step * batch_size < training_iters:
+
+    for step in range(1, num_steps+1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
         sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})

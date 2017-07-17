@@ -1,16 +1,18 @@
-'''
-A Convolutional Network implementation example using TensorFlow library.
-This example is using the MNIST database of handwritten digits
-(http://yann.lecun.com/exdb/mnist/)
+''' Multi-GPU Training Example.
+
+Train a convolutional neural network on multiple GPU with TensorFlow.
 
 This example is using TensorFlow layers, see 'convolutional_network_raw' example
-for a raw implementation with variables.
+for a raw TensorFlow implementation with variables.
+
+This example is using the MNIST database of handwritten digits
+(http://yann.lecun.com/exdb/mnist/)
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 import numpy as np
 import tensorflow as tf
@@ -20,7 +22,7 @@ import time
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
-# Parameters
+# Training Parameters
 num_gpus = 2
 num_steps = 200
 learning_rate = 0.001
