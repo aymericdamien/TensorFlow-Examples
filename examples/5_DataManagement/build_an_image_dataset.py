@@ -177,34 +177,34 @@ train_op = optimizer.minimize(loss_op)
 correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.cast(Y, tf.int64))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
 # Saver object
 saver = tf.train.Saver()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
-    # Initialize all variables
+
+    # Run the initializer
     sess.run(init)
-    step = 1
 
     # Start the data queue
     tf.train.start_queue_runners()
 
-    # Keep training until reach max iterations
-    while step < num_steps:
+    # Training cycle
+    for step in range(1, num_steps+1):
 
         if step % display_step == 0:
-            # Calculate batch loss and accuracy
+            # Run optimization and calculate batch loss and accuracy
             _, loss, acc = sess.run([train_op, loss_op, accuracy])
-            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc))
+            print("Step " + str(step) + ", Minibatch Loss= " + \
+                  "{:.4f}".format(loss) + ", Training Accuracy= " + \
+                  "{:.3f}".format(acc))
         else:
             # Only run the optimization op (backprop)
             sess.run(train_op)
-        step += 1
+
     print("Optimization Finished!")
 
     # Save your model

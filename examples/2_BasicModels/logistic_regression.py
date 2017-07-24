@@ -37,11 +37,13 @@ cost = tf.reduce_mean(-tf.reduce_sum(y*tf.log(pred), reduction_indices=1))
 # Gradient Descent
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
+
+    # Run the initializer
     sess.run(init)
 
     # Training cycle

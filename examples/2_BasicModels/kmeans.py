@@ -47,11 +47,13 @@ train_op) = kmeans.training_graph()
 cluster_idx = cluster_idx[0] # fix for cluster_idx being a tuple
 avg_distance = tf.reduce_mean(scores)
 
-# Initialize all variables
+# Initialize the variables (i.e. assign their default value)
 init_vars = tf.global_variables_initializer()
 
 # Start TensorFlow session
 sess = tf.Session()
+
+# Run the initializer
 sess.run(init_vars, feed_dict={X: full_data_x})
 sess.run(init_op, feed_dict={X: full_data_x})
 

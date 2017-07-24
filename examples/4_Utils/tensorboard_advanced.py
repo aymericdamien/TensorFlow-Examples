@@ -87,7 +87,7 @@ with tf.name_scope('Accuracy'):
     acc = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
     acc = tf.reduce_mean(tf.cast(acc, tf.float32))
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
 # Create a summary to monitor cost tensor
@@ -103,8 +103,10 @@ for grad, var in grads:
 # Merge all summaries into a single op
 merged_summary_op = tf.summary.merge_all()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
+
+    # Run the initializer
     sess.run(init)
 
     # op to write logs to Tensorboard

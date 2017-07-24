@@ -7,6 +7,7 @@ with queues, that make data processing and training faster (especially on GPU).
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 """
+from __future__ import print_function
 
 import tensorflow as tf
 
@@ -16,7 +17,7 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Parameters
 learning_rate = 0.001
-training_iters = 200000
+num_steps = 100
 batch_size = 128
 display_step = 10
 
@@ -106,22 +107,23 @@ train_op = optimizer.minimize(loss_op)
 correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
-# Launch the graph
+# Run the initializer
 sess.run(init)
-step = 1
-# Keep training until reach max iterations
-while step * batch_size < training_iters:
-    # Run optimization op (backprop)
-    # No need for using feed dicts!
-    sess.run(train_op)
+
+# Training cycle
+for step in range(1, num_steps + 1):
+
     if step % display_step == 0:
-        # Calculate batch loss and accuracy
-        loss, acc = sess.run([loss_op, accuracy])
-        print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-              "{:.6f}".format(loss) + ", Training Accuracy= " + \
-              "{:.5f}".format(acc))
-    step += 1
+        # Run optimization and calculate batch loss and accuracy
+        _, loss, acc = sess.run([train_op, loss_op, accuracy])
+        print("Step " + str(step) + ", Minibatch Loss= " + \
+              "{:.4f}".format(loss) + ", Training Accuracy= " + \
+              "{:.3f}".format(acc))
+    else:
+        # Only run the optimization op (backprop)
+        sess.run(train_op)
+
 print("Optimization Finished!")

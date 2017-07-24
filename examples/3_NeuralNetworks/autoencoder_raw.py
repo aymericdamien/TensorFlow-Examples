@@ -88,12 +88,15 @@ y_true = X
 cost = tf.reduce_mean(tf.pow(y_true - y_pred, 2))
 optimizer = tf.train.RMSPropOptimizer(learning_rate).minimize(cost)
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
+
+    # Run the initializer
     sess.run(init)
+
     total_batch = int(mnist.train.num_examples/batch_size)
     # Training cycle
     for epoch in range(training_epochs):

@@ -51,11 +51,13 @@ infer_op = forest_graph.inference_graph(X)
 correct_prediction = tf.equal(tf.argmax(infer_op, 1), tf.cast(Y, tf.int64))
 accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-# Initialize all variables
+# Initialize the variables (i.e. assign their default value)
 init_vars = tf.global_variables_initializer()
 
 # Start TensorFlow session
 sess = tf.Session()
+
+# Run the initializer
 sess.run(init_vars)
 
 # Training

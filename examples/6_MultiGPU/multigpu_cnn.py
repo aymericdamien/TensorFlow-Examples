@@ -149,13 +149,15 @@ with tf.device('/cpu:0'):
     tower_grads = average_gradients(tower_grads)
     train_op = optimizer.apply_gradients(tower_grads)
 
-    # Initializing the variables
+    # Initialize the variables (i.e. assign their default value)
     init = tf.global_variables_initializer()
 
-    # Launch the graph
+    # Start Training
     with tf.Session() as sess:
+
+        # Run the initializer
         sess.run(init)
-        step = 1
+
         # Keep training until reach max iterations
         for step in range(1, num_steps + 1):
             # Get a batch for each GPU

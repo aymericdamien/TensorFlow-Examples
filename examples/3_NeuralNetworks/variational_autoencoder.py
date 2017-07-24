@@ -95,13 +95,15 @@ loss_op = vae_loss(decoder, input_image)
 optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
+# Start training
 with tf.Session() as sess:
+
+    # Run the initializer
     sess.run(init)
 
-    # Training
     for i in range(1, num_steps+1):
         # Prepare Data
         # Get the next batch of MNIST data (only images are needed, not labels)
