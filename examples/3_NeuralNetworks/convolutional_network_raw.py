@@ -96,17 +96,18 @@ biases = {
 }
 
 # Construct model
-pred = conv_net(X, weights, biases, keep_prob)
+logits = conv_net(X, weights, biases, keep_prob)
+prediction = tf.nn.softmax(logits)
 
 # Define loss and optimizer
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-    logits=pred, labels=Y))
+    logits=logits, labels=Y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
 
 # Evaluate model
-correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(Y, 1))
+correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
@@ -121,11 +122,12 @@ with tf.Session() as sess:
     for step in range(1, num_steps+1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
-        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})
+        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
         if step % display_step == 0 or step == 1:
             # Calculate batch loss and accuracy
             loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,
-                                                                 Y: batch_y})
+                                                                 Y: batch_y,
+                                                                 keep_prob: 1.0})
             print("Step " + str(step) + ", Minibatch Loss= " + \
                   "{:.4f}".format(loss) + ", Training Accuracy= " + \
                   "{:.3f}".format(acc))
@@ -135,4 +137,5 @@ with tf.Session() as sess:
     # Calculate accuracy for 256 MNIST test images
     print("Testing Accuracy:", \
         sess.run(accuracy, feed_dict={X: mnist.test.images[:256],
-                                      Y: mnist.test.labels[:256]}))
+                                      Y: mnist.test.labels[:256],
+                                      keep_prob: 1.0}))

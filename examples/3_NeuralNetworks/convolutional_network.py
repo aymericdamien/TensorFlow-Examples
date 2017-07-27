@@ -79,6 +79,7 @@ logits_train = conv_net(X, num_classes, dropout, reuse=False, is_training=True)
 # Create another graph for testing that reuse the same weights, but has
 # different behavior for 'dropout' (not applied).
 logits_test = conv_net(X, num_classes, dropout, reuse=True, is_training=False)
+prediction = tf.nn.softmax(logits_test)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
@@ -87,7 +88,7 @@ optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
 # Evaluate model (with test logits, for dropout to be disabled)
-correct_pred = tf.equal(tf.argmax(logits_test, 1), tf.argmax(Y, 1))
+correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initialize the variables (i.e. assign their default value)
