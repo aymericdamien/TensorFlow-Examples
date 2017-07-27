@@ -30,9 +30,9 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Training Params
-num_steps = 30000
-batch_size = 32
-learning_rate = 0.001
+num_steps = 100000
+batch_size = 128
+learning_rate = 0.0002
 
 # Network Params
 image_dim = 784 # 28*28 pixels
@@ -144,6 +144,8 @@ with tf.Session() as sess:
         z = np.random.uniform(-1., 1., size=[4, noise_dim])
         g = sess.run([gen_sample], feed_dict={gen_input: z})
         g = np.reshape(g, newshape=(4, 28, 28, 1))
+        # Reverse colours for better display
+        g = -1 * (g - 1)
         for j in range(4):
             # Generate image from noise. Extend to 3 channels for matplot figure.
             img = np.reshape(np.repeat(g[j][:, :, np.newaxis], 3, axis=2),
