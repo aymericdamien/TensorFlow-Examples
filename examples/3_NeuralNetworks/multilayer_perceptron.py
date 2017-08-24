@@ -57,10 +57,11 @@ biases = {
 }
 
 # Construct model
-pred = multilayer_perceptron(x, weights, biases)
+logits = multilayer_perceptron(x, weights, biases)
+pred = tf.nn.softmax(logits)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
