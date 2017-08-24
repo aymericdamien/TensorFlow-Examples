@@ -49,7 +49,7 @@ with tf.name_scope('Accuracy'):
     acc = tf.reduce_mean(tf.cast(acc, tf.float32))
 
 # Initializing the variables
-init = tf.global_variables_initializer()
+init = tf.initialize_all_variables()
 
 # Create a summary to monitor cost tensor
 tf.summary.scalar("loss", cost)

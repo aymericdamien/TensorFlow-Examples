@@ -64,7 +64,7 @@ cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, label
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
-init = tf.global_variables_initializer()
+init = tf.initialize_all_variables()
 
 # 'Saver' op to save and restore all the variables
 saver = tf.train.Saver()
