@@ -20,7 +20,7 @@ learning_rate = 0.01
 training_epochs = 25
 batch_size = 100
 display_step = 1
-logs_path = '/tmp/tensorflow_logs/example'
+logs_path = '/tmp/tensorflow_logs/example/'
 
 # Network Parameters
 n_hidden_1 = 256 # 1st layer number of features
