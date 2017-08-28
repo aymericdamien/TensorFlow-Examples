@@ -18,13 +18,13 @@ from __future__ import print_function
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
 
 import tensorflow as tf
 
 # Parameters
 learning_rate = 0.1
-num_steps = 500
+num_steps = 1000
 batch_size = 128
 display_step = 100
 
@@ -34,13 +34,11 @@ n_hidden_2 = 256 # 2nd layer number of neurons
 num_input = 784 # MNIST data input (img shape: 28*28)
 num_classes = 10 # MNIST total classes (0-9 digits)
 
-# tf Graph input
-X = tf.placeholder("float", [None, num_input])
-Y = tf.placeholder("float", [None, num_classes])
 
-
-# Create model
-def neural_net(x):
+# Define the neural network
+def neural_net(x_dict):
+    # TF Estimator input is a dict, in case of multiple inputs
+    x = x_dict['images']
     # Hidden fully connected layer with 256 neurons
     layer_1 = tf.layers.dense(x, n_hidden_1)
     # Hidden fully connected layer with 256 neurons
@@ -50,44 +48,56 @@ def neural_net(x):
     return out_layer
 
 
-# Create a graph for training
-logits = neural_net(X)
-prediction = tf.nn.softmax(logits)
+# Define the model function (following TF Estimator Template)
+def model_fn(features, labels, mode):
+    # Build the neural network
+    logits = neural_net(features)
 
-# Define loss and optimizer
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-    logits=logits, labels=Y))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-train_op = optimizer.minimize(loss_op)
+    # Predictions
+    pred_classes = tf.argmax(logits, axis=1)
+    pred_probas = tf.nn.softmax(logits)
 
-# Evaluate model
-correct_pred = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+    # If prediction mode, early return
+    if mode == tf.estimator.ModeKeys.PREDICT:
+        return tf.estimator.EstimatorSpec(mode, predictions=pred_classes)
 
-# Initialize the variables (i.e. assign their default value)
-init = tf.global_variables_initializer()
+        # Define loss and optimizer
+    loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
+        logits=logits, labels=tf.cast(labels, dtype=tf.int32)))
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+    train_op = optimizer.minimize(loss_op,
+                                  global_step=tf.train.get_global_step())
 
-# Start training
-with tf.Session() as sess:
+    # Evaluate the accuracy of the model
+    acc_op = tf.metrics.accuracy(labels=labels, predictions=pred_classes)
 
-    # Run the initializer
-    sess.run(init)
+    # TF Estimators requires to return a EstimatorSpec, that specify
+    # the different ops for training, evaluating, ...
+    estim_specs = tf.estimator.EstimatorSpec(
+        mode=mode,
+        predictions=pred_classes,
+        loss=loss_op,
+        train_op=train_op,
+        eval_metric_ops={'accuracy': acc_op})
 
-    for step in range(1, num_steps+1):
-        batch_x, batch_y = mnist.train.next_batch(batch_size)
-        # Run optimization op (backprop)
-        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y})
-        if step % display_step == 0 or step == 1:
-            # Calculate batch loss and accuracy
-            loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,
-                                                                 Y: batch_y})
-            print("Step " + str(step) + ", Minibatch Loss= " + \
-                  "{:.4f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.3f}".format(acc))
+    return estim_specs
 
-    print("Optimization Finished!")
+# Build the Estimator
+model = tf.estimator.Estimator(model_fn)
 
-    # Calculate accuracy for MNIST test images
-    print("Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={X: mnist.test.images,
-                                      Y: mnist.test.labels}))
+# Define the input function for training
+input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={'images': mnist.train.images}, y=mnist.train.labels,
+    batch_size=batch_size, num_epochs=None, shuffle=True)
+# Train the Model
+model.train(input_fn, steps=num_steps)
+
+# Evaluate the Model
+# Define the input function for evaluating
+input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={'images': mnist.test.images}, y=mnist.test.labels,
+    batch_size=batch_size, shuffle=False)
+# Use the Estimator 'evaluate' method
+e = model.evaluate(input_fn)
+
+print("Testing Accuracy:", e['accuracy'])
