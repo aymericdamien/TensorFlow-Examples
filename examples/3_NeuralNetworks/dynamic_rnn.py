@@ -1,13 +1,16 @@
-'''
-A Dynamic Recurrent Neural Network (LSTM) implementation example using
-TensorFlow library. This example is using a toy dataset to classify linear
-sequences. The generated sequences have variable length.
+""" Dynamic Recurrent Neural Network.
 
-Long Short Term Memory paper: http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf
+TensorFlow implementation of a Recurrent Neural Network (LSTM) that performs
+dynamic computation over sequences with variable length. This example is using
+a toy dataset to classify linear sequences. The generated sequences have
+variable length.
+
+Links:
+    [Long Short Term Memory](http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf)
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
+"""
 
 from __future__ import print_function
 
@@ -81,9 +84,9 @@ class ToySequenceData(object):
 
 # Parameters
 learning_rate = 0.01
-training_iters = 1000000
+training_steps = 10000
 batch_size = 128
-display_step = 10
+display_step = 200
 
 # Network Parameters
 seq_max_len = 20 # Sequence max length
@@ -157,30 +160,31 @@ optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minim
 correct_pred = tf.equal(tf.argmax(pred,1), tf.argmax(y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
-# Launch the graph
+# Start training
 with tf.Session() as sess:
+
+    # Run the initializer
     sess.run(init)
-    step = 1
-    # Keep training until reach max iterations
-    while step * batch_size < training_iters:
+
+    for step in range(1, training_steps + 1):
         batch_x, batch_y, batch_seqlen = trainset.next(batch_size)
         # Run optimization op (backprop)
         sess.run(optimizer, feed_dict={x: batch_x, y: batch_y,
                                        seqlen: batch_seqlen})
-        if step % display_step == 0:
+        if step % display_step == 0 or step == 1:
             # Calculate batch accuracy
             acc = sess.run(accuracy, feed_dict={x: batch_x, y: batch_y,
                                                 seqlen: batch_seqlen})
             # Calculate batch loss
             loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y,
                                              seqlen: batch_seqlen})
-            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
+            print("Step " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
                   "{:.5f}".format(acc))
-        step += 1
+
     print("Optimization Finished!")
 
     # Calculate accuracy
