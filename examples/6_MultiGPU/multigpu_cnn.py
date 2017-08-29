@@ -176,7 +176,7 @@ with tf.device('/cpu:0'):
             step += 1
         print("Optimization Finished!")
 
-        # Calculate accuracy for 1000 mnist test images
+        # Calculate accuracy for MNIST test images
         print("Testing Accuracy:", \
             np.mean([sess.run(accuracy, feed_dict={X: mnist.test.images[i:i+batch_size],
             Y: mnist.test.labels[i:i+batch_size]}) for i in range(0, len(mnist.test.images), batch_size)]))

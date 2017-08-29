@@ -17,9 +17,9 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Parameters
 learning_rate = 0.001
-num_steps = 100
+num_steps = 2000
 batch_size = 128
-display_step = 10
+display_step = 100
 
 # Network Parameters
 n_input = 784 # MNIST data input (img shape: 28*28)
@@ -116,14 +116,22 @@ sess.run(init)
 # Training cycle
 for step in range(1, num_steps + 1):
 
-    if step % display_step == 0:
-        # Run optimization and calculate batch loss and accuracy
-        _, loss, acc = sess.run([train_op, loss_op, accuracy])
+    try:
+        # Run optimization
+        sess.run(train_op)
+    except tf.errors.OutOfRangeError:
+        # Reload the iterator when it reaches the end of the dataset
+        sess.run(iterator.initializer,
+                 feed_dict={_data: mnist.train.images,
+                            _labels: mnist.train.labels})
+        sess.run(train_op)
+
+    if step % display_step == 0 or step == 1:
+        # Calculate batch loss and accuracy
+        # (note that this consume a new batch of data)
+        loss, acc = sess.run([loss_op, accuracy])
         print("Step " + str(step) + ", Minibatch Loss= " + \
               "{:.4f}".format(loss) + ", Training Accuracy= " + \
               "{:.3f}".format(acc))
-    else:
-        # Only run the optimization op (backprop)
-        sess.run(train_op)
 
 print("Optimization Finished!")
