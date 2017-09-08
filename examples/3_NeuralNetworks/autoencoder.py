@@ -41,16 +41,16 @@ num_input = 784 # MNIST data input (img shape: 28*28)
 X = tf.placeholder("float", [None, num_input])
 
 weights = {
-    'encoder_h1': tf.Variable(tf.random_normal([num_input, num_hidden_1])),
-    'encoder_h2': tf.Variable(tf.random_normal([num_hidden_1, num_hidden_2])),
-    'decoder_h1': tf.Variable(tf.random_normal([num_hidden_2, num_hidden_1])),
-    'decoder_h2': tf.Variable(tf.random_normal([num_hidden_1, num_input])),
+    'encoder_h1': tf.Variable(tf.truncated_normal([num_input, num_hidden_1], stddev=0.1)),
+    'encoder_h2': tf.Variable(tf.truncated_normal([num_hidden_1, num_hidden_2], stddev=0.1)),
+    'decoder_h1': tf.Variable(tf.truncated_normal([num_hidden_2, num_hidden_1], stddev=0.1)),
+    'decoder_h2': tf.Variable(tf.truncated_normal([num_hidden_1, num_input], stddev=0.1))
 }
 biases = {
-    'encoder_b1': tf.Variable(tf.random_normal([num_hidden_1])),
-    'encoder_b2': tf.Variable(tf.random_normal([num_hidden_2])),
-    'decoder_b1': tf.Variable(tf.random_normal([num_hidden_1])),
-    'decoder_b2': tf.Variable(tf.random_normal([num_input])),
+    'encoder_b1': tf.Variable(tf.truncated_normal([num_hidden_1], stddev=0.1)),
+    'encoder_b2': tf.Variable(tf.truncated_normal([num_hidden_2], stddev=0.1)),
+    'decoder_b1': tf.Variable(tf.truncated_normal([num_hidden_1], stddev=0.1)),
+    'decoder_b2': tf.Variable(tf.truncated_normal([num_input], stddev=0.1))
 }
 
 # Building the encoder
