@@ -175,12 +175,9 @@ with tf.Session() as sess:
         sess.run(optimizer, feed_dict={x: batch_x, y: batch_y,
                                        seqlen: batch_seqlen})
         if step % display_step == 0 or step == 1:
-            # Calculate batch accuracy
-            acc = sess.run(accuracy, feed_dict={x: batch_x, y: batch_y,
+            # Calculate batch accuracy & loss
+            acc, loss = sess.run([accuracy, cost], feed_dict={x: batch_x, y: batch_y,
                                                 seqlen: batch_seqlen})
-            # Calculate batch loss
-            loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y,
-                                             seqlen: batch_seqlen})
             print("Step " + str(step*batch_size) + ", Minibatch Loss= " + \
                   "{:.6f}".format(loss) + ", Training Accuracy= " + \
                   "{:.5f}".format(acc))
