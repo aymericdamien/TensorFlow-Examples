@@ -63,7 +63,7 @@ pred = multilayer_perceptron(x, weights, biases)
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
-# Initializing the variables
+# Initialize the variables (i.e. assign their default value)
 init = tf.global_variables_initializer()
 
 # 'Saver' op to save and restore all the variables
@@ -72,7 +72,8 @@ saver = tf.train.Saver()
 # Running first session
 print("Starting 1st session...")
 with tf.Session() as sess:
-    # Initialize variables
+
+    # Run the initializer
     sess.run(init)
 
     # Training cycle

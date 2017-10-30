@@ -1,134 +1,125 @@
-'''
-A Convolutional Network implementation example using TensorFlow library.
+""" Convolutional Neural Network.
+
+Build and train a convolutional neural network with TensorFlow.
 This example is using the MNIST database of handwritten digits
 (http://yann.lecun.com/exdb/mnist/)
 
+This example is using TensorFlow layers API, see 'convolutional_network_raw' 
+example for a raw implementation with variables.
+
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-'''
-
-from __future__ import print_function
-
-import tensorflow as tf
+"""
+from __future__ import division, print_function, absolute_import
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
+mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
 
-# Parameters
+import tensorflow as tf
+
+# Training Parameters
 learning_rate = 0.001
-training_iters = 200000
+num_steps = 2000
 batch_size = 128
-display_step = 10
 
 # Network Parameters
-n_input = 784 # MNIST data input (img shape: 28*28)
-n_classes = 10 # MNIST total classes (0-9 digits)
+num_input = 784 # MNIST data input (img shape: 28*28)
+num_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
 
-# tf Graph input
-x = tf.placeholder(tf.float32, [None, n_input])
-y = tf.placeholder(tf.float32, [None, n_classes])
-keep_prob = tf.placeholder(tf.float32) #dropout (keep probability)
 
+# Create the neural network
+def conv_net(x_dict, n_classes, dropout, reuse, is_training):
+    # Define a scope for reusing the variables
+    with tf.variable_scope('ConvNet', reuse=reuse):
+        # TF Estimator input is a dict, in case of multiple inputs
+        x = x_dict['images']
 
-# Create some wrappers for simplicity
-def conv2d(x, W, b, strides=1):
-    # Conv2D wrapper, with bias and relu activation
-    x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME')
-    x = tf.nn.bias_add(x, b)
-    return tf.nn.relu(x)
+        # MNIST data input is a 1-D vector of 784 features (28*28 pixels)
+        # Reshape to match picture format [Height x Width x Channel]
+        # Tensor input become 4-D: [Batch Size, Height, Width, Channel]
+        x = tf.reshape(x, shape=[-1, 28, 28, 1])
 
+        # Convolution Layer with 32 filters and a kernel size of 5
+        conv1 = tf.layers.conv2d(x, 32, 5, activation=tf.nn.relu)
+        # Max Pooling (down-sampling) with strides of 2 and kernel size of 2
+        conv1 = tf.layers.max_pooling2d(conv1, 2, 2)
 
-def maxpool2d(x, k=2):
-    # MaxPool2D wrapper
-    return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1],
-                          padding='SAME')
+        # Convolution Layer with 64 filters and a kernel size of 3
+        conv2 = tf.layers.conv2d(conv1, 64, 3, activation=tf.nn.relu)
+        # Max Pooling (down-sampling) with strides of 2 and kernel size of 2
+        conv2 = tf.layers.max_pooling2d(conv2, 2, 2)
 
+        # Flatten the data to a 1-D vector for the fully connected layer
+        fc1 = tf.contrib.layers.flatten(conv2)
 
-# Create model
-def conv_net(x, weights, biases, dropout):
-    # Reshape input picture
-    x = tf.reshape(x, shape=[-1, 28, 28, 1])
+        # Fully connected layer (in tf contrib folder for now)
+        fc1 = tf.layers.dense(fc1, 1024)
+        # Apply Dropout (if is_training is False, dropout is not applied)
+        fc1 = tf.layers.dropout(fc1, rate=dropout, training=is_training)
 
-    # Convolution Layer
-    conv1 = conv2d(x, weights['wc1'], biases['bc1'])
-    # Max Pooling (down-sampling)
-    conv1 = maxpool2d(conv1, k=2)
+        # Output layer, class prediction
+        out = tf.layers.dense(fc1, n_classes)
 
-    # Convolution Layer
-    conv2 = conv2d(conv1, weights['wc2'], biases['bc2'])
-    # Max Pooling (down-sampling)
-    conv2 = maxpool2d(conv2, k=2)
-
-    # Fully connected layer
-    # Reshape conv2 output to fit fully connected layer input
-    fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list()[0]])
-    fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1'])
-    fc1 = tf.nn.relu(fc1)
-    # Apply Dropout
-    fc1 = tf.nn.dropout(fc1, dropout)
-
-    # Output, class prediction
-    out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
     return out
 
-# Store layers weight & bias
-weights = {
-    # 5x5 conv, 1 input, 32 outputs
-    'wc1': tf.Variable(tf.random_normal([5, 5, 1, 32])),
-    # 5x5 conv, 32 inputs, 64 outputs
-    'wc2': tf.Variable(tf.random_normal([5, 5, 32, 64])),
-    # fully connected, 7*7*64 inputs, 1024 outputs
-    'wd1': tf.Variable(tf.random_normal([7*7*64, 1024])),
-    # 1024 inputs, 10 outputs (class prediction)
-    'out': tf.Variable(tf.random_normal([1024, n_classes]))
-}
 
-biases = {
-    'bc1': tf.Variable(tf.random_normal([32])),
-    'bc2': tf.Variable(tf.random_normal([64])),
-    'bd1': tf.Variable(tf.random_normal([1024])),
-    'out': tf.Variable(tf.random_normal([n_classes]))
-}
+# Define the model function (following TF Estimator Template)
+def model_fn(features, labels, mode):
+    # Build the neural network
+    # Because Dropout have different behavior at training and prediction time, we
+    # need to create 2 distinct computation graphs that still share the same weights.
+    logits_train = conv_net(features, num_classes, dropout, reuse=False,
+                            is_training=True)
+    logits_test = conv_net(features, num_classes, dropout, reuse=True,
+                           is_training=False)
 
-# Construct model
-pred = conv_net(x, weights, biases, keep_prob)
+    # Predictions
+    pred_classes = tf.argmax(logits_test, axis=1)
+    pred_probas = tf.nn.softmax(logits_test)
 
-# Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+    # If prediction mode, early return
+    if mode == tf.estimator.ModeKeys.PREDICT:
+        return tf.estimator.EstimatorSpec(mode, predictions=pred_classes)
 
-# Evaluate model
-correct_pred = tf.equal(tf.argmax(pred, 1), tf.argmax(y, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+        # Define loss and optimizer
+    loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
+        logits=logits_train, labels=tf.cast(labels, dtype=tf.int32)))
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+    train_op = optimizer.minimize(loss_op,
+                                  global_step=tf.train.get_global_step())
 
-# Initializing the variables
-init = tf.global_variables_initializer()
+    # Evaluate the accuracy of the model
+    acc_op = tf.metrics.accuracy(labels=labels, predictions=pred_classes)
 
-# Launch the graph
-with tf.Session() as sess:
-    sess.run(init)
-    step = 1
-    # Keep training until reach max iterations
-    while step * batch_size < training_iters:
-        batch_x, batch_y = mnist.train.next_batch(batch_size)
-        # Run optimization op (backprop)
-        sess.run(optimizer, feed_dict={x: batch_x, y: batch_y,
-                                       keep_prob: dropout})
-        if step % display_step == 0:
-            # Calculate batch loss and accuracy
-            loss, acc = sess.run([cost, accuracy], feed_dict={x: batch_x,
-                                                              y: batch_y,
-                                                              keep_prob: 1.})
-            print("Iter " + str(step*batch_size) + ", Minibatch Loss= " + \
-                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  "{:.5f}".format(acc))
-        step += 1
-    print("Optimization Finished!")
+    # TF Estimators requires to return a EstimatorSpec, that specify
+    # the different ops for training, evaluating, ...
+    estim_specs = tf.estimator.EstimatorSpec(
+        mode=mode,
+        predictions=pred_classes,
+        loss=loss_op,
+        train_op=train_op,
+        eval_metric_ops={'accuracy': acc_op})
 
-    # Calculate accuracy for 256 mnist test images
-    print("Testing Accuracy:", \
-        sess.run(accuracy, feed_dict={x: mnist.test.images[:256],
-                                      y: mnist.test.labels[:256],
-                                      keep_prob: 1.}))
+    return estim_specs
+
+# Build the Estimator
+model = tf.estimator.Estimator(model_fn)
+
+# Define the input function for training
+input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={'images': mnist.train.images}, y=mnist.train.labels,
+    batch_size=batch_size, num_epochs=None, shuffle=True)
+# Train the Model
+model.train(input_fn, steps=num_steps)
+
+# Evaluate the Model
+# Define the input function for evaluating
+input_fn = tf.estimator.inputs.numpy_input_fn(
+    x={'images': mnist.test.images}, y=mnist.test.labels,
+    batch_size=batch_size, shuffle=False)
+# Use the Estimator 'evaluate' method
+e = model.evaluate(input_fn)
+
+print("Testing Accuracy:", e['accuracy'])
