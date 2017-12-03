@@ -42,8 +42,15 @@ kmeans = KMeans(inputs=X, num_clusters=k, distance_metric='cosine',
                 use_mini_batch=True)
 
 # Build KMeans graph
-(all_scores, cluster_idx, scores, cluster_centers_initialized, init_op,
-train_op) = kmeans.training_graph()
+training_graph = kmeans.training_graph()
+
+if len(training_graph) > 6: # Tensorflow 1.4+
+    (all_scores, cluster_idx, scores, cluster_centers_initialized,
+     cluster_centers_var, init_op, train_op) = training_graph
+else:
+    (all_scores, cluster_idx, scores, cluster_centers_initialized,
+     init_op, train_op) = training_graph
+
 cluster_idx = cluster_idx[0] # fix for cluster_idx being a tuple
 avg_distance = tf.reduce_mean(scores)
 
