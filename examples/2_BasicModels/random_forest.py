@@ -47,7 +47,7 @@ train_op = forest_graph.training_graph(X, Y)
 loss_op = forest_graph.training_loss(X, Y)
 
 # Measure the accuracy
-infer_op = forest_graph.inference_graph(X)
+infer_op, _, _ = forest_graph.inference_graph(X)
 correct_prediction = tf.equal(tf.argmax(infer_op, 1), tf.cast(Y, tf.int64))
 accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
@@ -55,7 +55,7 @@ accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 init_vars = tf.global_variables_initializer()
 
 # Start TensorFlow session
-sess = tf.Session()
+sess = tf.train.MonitoredSession()
 
 # Run the initializer
 sess.run(init_vars)
