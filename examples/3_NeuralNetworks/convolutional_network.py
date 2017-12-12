@@ -26,7 +26,7 @@ batch_size = 128
 # Network Parameters
 num_input = 784 # MNIST data input (img shape: 28*28)
 num_classes = 10 # MNIST total classes (0-9 digits)
-dropout = 0.75 # Dropout, probability to keep units
+dropout = 0.25 # Dropout, probability to drop a unit
 
 
 # Create the neural network
