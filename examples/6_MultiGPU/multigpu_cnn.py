@@ -104,6 +104,22 @@ def average_gradients(tower_grads):
     return average_grads
 
 
+# By default, all variables will be placed on '/gpu:0'
+# So we need a custom device function, to assign all variables to '/cpu:0'
+# Note: If GPUs are peered, '/gpu:0' can be a faster option
+PS_OPS = ['Variable', 'VariableV2', 'AutoReloadVariable']
+
+def assign_to_device(device, ps_device='/cpu:0'):
+    def _assign(op):
+        node_def = op if isinstance(op, tf.NodeDef) else op.node_def
+        if node_def.op in PS_OPS:
+            return "/" + ps_device
+        else:
+            return device
+
+    return _assign
+
+
 # Place all ops on CPU by default
 with tf.device('/cpu:0'):
     tower_grads = []
@@ -115,7 +131,7 @@ with tf.device('/cpu:0'):
 
     # Loop over all GPUs and construct their own computation graph
     for i in range(num_gpus):
-        with tf.device('/gpu:%d' % i):
+        with tf.device(assign_to_device('/gpu:{}'.format(i), ps_device='/cpu:0')):
 
             # Split data between GPUs
             _x = X[i * batch_size: (i+1) * batch_size]
