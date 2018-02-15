@@ -52,7 +52,7 @@ def conv_net(x_dict, n_classes, dropout, reuse, is_training):
         conv2 = tf.layers.max_pooling2d(conv2, 2, 2)
 
         # Flatten the data to a 1-D vector for the fully connected layer
-        fc1 = tf.contrib.layers.flatten(conv2)
+        fc1 = tf.layers.flatten(conv2)
 
         # Fully connected layer (in tf contrib folder for now)
         fc1 = tf.layers.dense(fc1, 1024)
