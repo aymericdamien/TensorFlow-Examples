@@ -1,7 +1,7 @@
-""" Neural Network.
+""" Neural Network with Eager API.
 
 A 2-Hidden Layers Fully Connected Neural Network (a.k.a Multilayer Perceptron)
-implementation with TensorFlow. This example is using the MNIST database
+implementation with TensorFlow's Eager API. This example is using the MNIST database
 of handwritten digits (http://yann.lecun.com/exdb/mnist/).
 
 This example is using TensorFlow layers, see 'neural_network_raw' example for

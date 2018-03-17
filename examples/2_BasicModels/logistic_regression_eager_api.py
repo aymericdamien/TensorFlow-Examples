@@ -1,5 +1,6 @@
-'''
-A logistic regression learning algorithm example using TensorFlow library.
+''' Logistic Regression with Eager API.
+
+A logistic regression learning algorithm example using TensorFlow's Eager API.
 This example is using the MNIST database of handwritten digits
 (http://yann.lecun.com/exdb/mnist/)
 
