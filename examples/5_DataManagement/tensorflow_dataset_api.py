@@ -33,7 +33,7 @@ sess = tf.Session()
 _data = tf.placeholder(tf.float32, [None, n_input])
 _labels = tf.placeholder(tf.float32, [None, n_classes])
 # Create a dataset from the images and the labels
-dataset = tf.contrib.data.Dataset.from_tensor_slices((_data, _labels))
+dataset = tf.data.Dataset.from_tensor_slices((_data, _labels))
 # Create batches of data
 dataset = dataset.batch(batch_size)
 # Create an iterator, to go over the dataset
