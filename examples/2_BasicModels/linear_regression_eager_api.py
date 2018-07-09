@@ -10,10 +10,10 @@ from __future__ import absolute_import, division, print_function
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-import tensorflow.contrib.eager as tfe
 
 # Set Eager API
-tfe.enable_eager_execution()
+tf.enable_eager_execution()
+tfe = tf.contrib.eager
 
 # Training Data
 train_X = [3.3, 4.4, 5.5, 6.71, 6.93, 4.168, 9.779, 6.182, 7.59, 2.167,

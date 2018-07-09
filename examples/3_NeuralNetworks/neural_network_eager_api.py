@@ -16,10 +16,10 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 from __future__ import print_function
 
 import tensorflow as tf
-import tensorflow.contrib.eager as tfe
 
 # Set Eager API
-tfe.enable_eager_execution()
+tf.enable_eager_execution()
+tfe = tf.contrib.eager
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
