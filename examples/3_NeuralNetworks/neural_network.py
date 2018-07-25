@@ -21,6 +21,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=False)
 
 import tensorflow as tf
+from tensorflow.python.estimator.export.export_output import PredictOutput
 
 # Parameters
 learning_rate = 0.1
@@ -54,12 +55,13 @@ def model_fn(features, labels, mode):
     logits = neural_net(features)
 
     # Predictions
-    pred_classes = tf.argmax(logits, axis=1)
+    pred_classes = tf.argmax(logits, axis=1, name='pred_classes')
     pred_probas = tf.nn.softmax(logits)
 
     # If prediction mode, early return
     if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode, predictions=pred_classes)
+        return tf.estimator.EstimatorSpec(mode, predictions=pred_classes,
+            export_outputs={'pred_classes':PredictOutput(pred_classes)})
 
         # Define loss and optimizer
     loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(
@@ -101,3 +103,9 @@ input_fn = tf.estimator.inputs.numpy_input_fn(
 e = model.evaluate(input_fn)
 
 print("Testing Accuracy:", e['accuracy'])
+
+model.export_savedmodel('./saved_fully_connected_network', strip_default_attrs=True,
+    serving_input_receiver_fn=tf.estimator.export.build_raw_serving_input_receiver_fn({
+        'images':tf.placeholder(tf.float32, shape=[1,784], name='images')
+    }))
+

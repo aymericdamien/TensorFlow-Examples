@@ -20,6 +20,8 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
+from tensorflow.python.saved_model.simple_save import simple_save
+
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
@@ -71,7 +73,7 @@ def decoder(x):
                                    biases['decoder_b1']))
     # Decoder Hidden layer with sigmoid activation #2
     layer_2 = tf.nn.sigmoid(tf.add(tf.matmul(layer_1, weights['decoder_h2']),
-                                   biases['decoder_b2']))
+                                   biases['decoder_b2']), name='decoder_op')
     return layer_2
 
 # Construct model
@@ -140,3 +142,7 @@ with tf.Session() as sess:
     plt.figure(figsize=(n, n))
     plt.imshow(canvas_recon, origin="upper", cmap="gray")
     plt.show()
+
+    print("Saving the model")
+    simple_save(sess, export_dir='./saved_autoencoder', inputs={"images":X}, outputs={"out":decoder_op})
+
