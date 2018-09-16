@@ -29,21 +29,21 @@ dropout = 0.75 # Dropout, probability to keep units
 sess = tf.Session()
 
 # Create a dataset tensor from the images and the labels
-dataset = tf.contrib.data.Dataset.from_tensor_slices(
+dataset = tf.data.Dataset.from_tensor_slices(
     (mnist.train.images, mnist.train.labels))
+# Automatically refill the data queue when empty
+dataset = dataset.repeat()
 # Create batches of data
 dataset = dataset.batch(batch_size)
-# Create an iterator, to go over the dataset
-iterator = dataset.make_initializable_iterator()
-# It is better to use 2 placeholders, to avoid to load all data into memory,
-# and avoid the 2Gb restriction length of a tensor.
-_data = tf.placeholder(tf.float32, [None, n_input])
-_labels = tf.placeholder(tf.float32, [None, n_classes])
-# Initialize the iterator
-sess.run(iterator.initializer, feed_dict={_data: mnist.train.images,
-                                          _labels: mnist.train.labels})
+# Prefetch data for faster
+dataset = dataset.prefetch(batch_size)
 
-# Neural Net Input
+# Create an iterator over the dataset
+iterator = dataset.make_initializable_iterator()
+# Initialize the iterator
+sess.run(iterator.initializer)
+
+# Neural Net Input (images, labels)
 X, Y = iterator.get_next()
 
 
@@ -116,15 +116,8 @@ sess.run(init)
 # Training cycle
 for step in range(1, num_steps + 1):
 
-    try:
-        # Run optimization
-        sess.run(train_op)
-    except tf.errors.OutOfRangeError:
-        # Reload the iterator when it reaches the end of the dataset
-        sess.run(iterator.initializer,
-                 feed_dict={_data: mnist.train.images,
-                            _labels: mnist.train.labels})
-        sess.run(train_op)
+    # Run optimization
+    sess.run(train_op)
 
     if step % display_step == 0 or step == 1:
         # Calculate batch loss and accuracy

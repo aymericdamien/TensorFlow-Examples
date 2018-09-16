@@ -39,7 +39,8 @@ num_classes = 10 # MNIST total classes (0-9 digits)
 
 # Using TF Dataset to split data into batches
 dataset = tf.data.Dataset.from_tensor_slices(
-    (mnist.train.images, mnist.train.labels)).batch(batch_size)
+    (mnist.train.images, mnist.train.labels))
+dataset = dataset.repeat().batch(batch_size).prefetch(batch_size)
 dataset_iter = tfe.Iterator(dataset)
 
 
@@ -92,12 +93,7 @@ average_acc = 0.
 for step in range(num_steps):
 
     # Iterate through the dataset
-    try:
-        d = dataset_iter.next()
-    except StopIteration:
-        # Refill queue
-        dataset_iter = tfe.Iterator(dataset)
-        d = dataset_iter.next()
+    d = dataset_iter.next()
 
     # Images
     x_batch = d[0]
