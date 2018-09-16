@@ -35,7 +35,7 @@ dataset = tf.data.Dataset.from_tensor_slices(
 dataset = dataset.repeat()
 # Create batches of data
 dataset = dataset.batch(batch_size)
-# Prefetch data for faster
+# Prefetch data for faster consumption
 dataset = dataset.prefetch(batch_size)
 
 # Create an iterator over the dataset
