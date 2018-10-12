@@ -1,3 +1,6 @@
+Hi everyone!  You can add the GitHub Pack to your Coda doc to stay up to date with the changes being made in Coda!
+
+-------
 # TensorFlow Examples
 
 This tutorial was designed for easily diving into TensorFlow, through examples. For readability, it includes both notebooks and source codes with explanation.
