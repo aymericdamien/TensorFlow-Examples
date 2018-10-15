@@ -1,7 +1,7 @@
-""" Generative Adversarial Networks (GAN).
+""" Generative Non-adversarial Networks (GAN).
 
-Using generative adversarial networks (GAN) to generate digit images from a
-noise distribution.
+Using generative non-adversarial networks (GAN) to generate digit images from a
+noise distribution in a peaceful manner.
 
 References:
     - Generative adversarial nets. I Goodfellow, J Pouget-Abadie, M Mirza,
