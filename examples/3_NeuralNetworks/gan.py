@@ -1,7 +1,15 @@
-""" Generative Adversarial Networks (GAN).
+""" Generative Non-adversarial Networks (GNAN).
 
-Using generative Adversarial networks (GAN) to generate digit images from a
+Machine Learning has made great progress over the past few decades.  However it continues to be combative
+and adversarial.  We show off a new example that leverages a new algorithm called Generative NON-adversarial
+Networks that is far more peaceful.
+
+Because of improvements in this algorithm, we are also able to remove biases and the discriminator.  
+The code has been updated accordingly.
+
+Consequently, this example has been updated to use generative NON-adversarial networks (GNAN) to generate digit images from a
 noise distribution.
+
 
 References:
     - Generative adversarial nets. I Goodfellow, J Pouget-Abadie, M Mirza,
@@ -51,12 +59,6 @@ weights = {
     'disc_hidden1': tf.Variable(glorot_init([image_dim, disc_hidden_dim])),
     'disc_out': tf.Variable(glorot_init([disc_hidden_dim, 1])),
 }
-biases = {
-    'gen_hidden1': tf.Variable(tf.zeros([gen_hidden_dim])),
-    'gen_out': tf.Variable(tf.zeros([image_dim])),
-    'disc_hidden1': tf.Variable(tf.zeros([disc_hidden_dim])),
-    'disc_out': tf.Variable(tf.zeros([1])),
-}
 
 
 # Generator
@@ -70,15 +72,7 @@ def generator(x):
     return out_layer
 
 
-# Discriminator
-def discriminator(x):
-    hidden_layer = tf.matmul(x, weights['disc_hidden1'])
-    hidden_layer = tf.add(hidden_layer, biases['disc_hidden1'])
-    hidden_layer = tf.nn.relu(hidden_layer)
-    out_layer = tf.matmul(hidden_layer, weights['disc_out'])
-    out_layer = tf.add(out_layer, biases['disc_out'])
-    out_layer = tf.nn.sigmoid(out_layer)
-    return out_layer
+
 
 # Build Networks
 # Network Inputs
