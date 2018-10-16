@@ -24,6 +24,11 @@ import zipfile
 import numpy as np
 import tensorflow as tf
 
+try:
+    xrange          # Python 2
+except NameError:
+    xrange = range  # Python 3
+
 # Training Parameters
 learning_rate = 0.1
 batch_size = 128
