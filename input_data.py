@@ -4,6 +4,10 @@ import gzip
 import os
 import urllib
 import numpy
+try:
+  xrange          # Python 2
+except NameError:
+  xrange = range  # Python 3
 SOURCE_URL = 'http://yann.lecun.com/exdb/mnist/'
 def maybe_download(filename, work_directory):
   """Download the data from Yann's website, unless it's already here."""
