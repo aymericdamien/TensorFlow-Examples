@@ -59,7 +59,7 @@ count = [('UNK', -1)]
 # Retrieve the most common words
 count.extend(collections.Counter(text_words).most_common(max_vocabulary_size - 1))
 # Remove samples with less than 'min_occurrence' occurrences
-for i in range(len(count) - 1, -1):
+for i in range(len(count) - 1, -1, -1):
     if count[i][1] < min_occurrence:
         count.pop(i)
     else:
