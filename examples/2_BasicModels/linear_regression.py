@@ -28,9 +28,9 @@ n_samples = train_X.shape[0]
 X = tf.placeholder("float")
 Y = tf.placeholder("float")
 
-# Set model weights
-W = tf.Variable(rng.randn(), name="weight")
-b = tf.Variable(rng.randn(), name="bias")
+# Set model weights and bias as variable (get_variable uses is recommended by tensorflow)
+W = tf.get_variable(initializer=rng.randn(), name="weight")
+b = tf.get_variable(initializer= rng.randn(), name="bias")
 
 # Construct a linear model
 pred = tf.add(tf.multiply(X, W), b)
