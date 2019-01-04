@@ -56,7 +56,8 @@ def read_images(dataset_path, mode, batch_size):
     imagepaths, labels = list(), list()
     if mode == 'file':
         # Read dataset file
-        data = open(dataset_path, 'r').read().splitlines()
+        with open(dataset_path) as f:
+            data = f.read().splitlines()
         for d in data:
             imagepaths.append(d.split(' ')[0])
             labels.append(int(d.split(' ')[1]))
