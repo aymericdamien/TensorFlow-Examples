@@ -16,7 +16,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.factorization import KMeans
 
-# Ignore all GPUs, tf random forest does not benefit from it.
+# Ignore all GPUs, tf k-means does not benefit from it.
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
