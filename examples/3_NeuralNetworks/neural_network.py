@@ -40,9 +40,9 @@ def neural_net(x_dict):
     # TF Estimator input is a dict, in case of multiple inputs
     x = x_dict['images']
     # Hidden fully connected layer with 256 neurons
-    layer_1 = tf.layers.dense(x, n_hidden_1)
+    layer_1 = tf.nn.relu(tf.layers.dense(x, n_hidden_1))
     # Hidden fully connected layer with 256 neurons
-    layer_2 = tf.layers.dense(layer_1, n_hidden_2)
+    layer_2 = tf.nn.relu(tf.layers.dense(layer_1, n_hidden_2))
     # Output fully connected layer with a neuron for each class
     out_layer = tf.layers.dense(layer_2, num_classes)
     return out_layer
