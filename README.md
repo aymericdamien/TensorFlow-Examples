@@ -1,6 +1,6 @@
 # TensorFlow Examples
 
-This tutorial was designed for easily diving into TensorFlow, through examples. For readability, it includes both notebooks and source codes with explanation for both TF v1 & v2.
+This tutorial was designed for easily diving into TensorFlow, through examples. For readability, it includes both notebooks and source codes with explanation, for both TF v1 & v2.
 
 It is suitable for beginners who want to find clear and concise examples about TensorFlow. Besides the traditional 'raw' TensorFlow implementations, you can also find the latest TensorFlow API practices (such as `layers`, `estimator`, `dataset`, ...).
 
@@ -61,9 +61,9 @@ It is suitable for beginners who want to find clear and concise examples about T
 - **Basic Operations on multi-GPU** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/6_MultiGPU/multigpu_basics.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/6_MultiGPU/multigpu_basics.py)). A simple example to introduce multi-GPU in TensorFlow.
 - **Train a Neural Network on multi-GPU** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/6_MultiGPU/multigpu_cnn.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/6_MultiGPU/multigpu_cnn.py)). A clear and simple TensorFlow implementation to train a convolutional neural network on multiple GPUs.
 
-## TensorFlow v2
+## TensorFlow 2.0
 
-The tutorial index for TF v2 is available here: [TensorFlow v2 Examples](tensorflow_v2).
+The tutorial index for TF v2 is available here: [TensorFlow 2.0 Examples](tensorflow_v2).
 
 ## Dataset
 Some examples require MNIST dataset for training and testing. Don't worry, this dataset will automatically be downloaded when running examples.
@@ -83,7 +83,7 @@ To run them, you also need the latest version of TensorFlow. To install it:
 pip install tensorflow
 ```
 
-or (if you want GPU support):
+or (with GPU support):
 ```
 pip install tensorflow_gpu
 ```
