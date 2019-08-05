@@ -82,7 +82,7 @@ real_image_input = tf.placeholder(tf.float32, shape=[None, 28, 28, 1])
 # Build Generator Network
 gen_sample = generator(noise_input)
 
-# Build 2 Discriminator Networks (one from noise input, one from generated samples)
+# Build 2 Discriminator Networks (one from real image input, one from generated samples)
 disc_real = discriminator(real_image_input)
 disc_fake = discriminator(gen_sample, reuse=True)
 disc_concat = tf.concat([disc_real, disc_fake], axis=0)
@@ -135,7 +135,7 @@ with tf.Session() as sess:
         z = np.random.uniform(-1., 1., size=[batch_size, noise_dim])
 
         # Prepare Targets (Real image: 1, Fake image: 0)
-        # The first half of data fed to the generator are real images,
+        # The first half of data fed to the discriminator are real images,
         # the other half are fake images (coming from the generator).
         batch_disc_y = np.concatenate(
             [np.ones([batch_size]), np.zeros([batch_size])], axis=0)
