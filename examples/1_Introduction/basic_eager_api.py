@@ -20,11 +20,15 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 import tensorflow as tf
-import tensorflow.contrib.eager as tfe
 
 # Set Eager API
 print("Setting Eager mode...")
+
+#old tensorflow version
+#in the new tensorflow version just code: tf.excuting_eagerly()
+import tensorflow.contrib.eager as tfe
 tfe.enable_eager_execution()
+
 
 # Define constant tensors
 print("Define constant tensors")
