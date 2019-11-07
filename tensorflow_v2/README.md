@@ -43,10 +43,10 @@
 
 To install TensorFlow 2.0, simply run:
 ```
-pip install tensorflow==2.0.0-beta1
+pip install tensorflow==2.0.0
 ```
 
 or (if you want GPU support):
 ```
-pip install tensorflow_gpu==2.0.0-beta1
+pip install tensorflow_gpu==2.0.0
 ```
