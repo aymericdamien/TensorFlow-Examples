@@ -9,7 +9,7 @@ All the following examples are the original TF v1 examples.
 - [Introduction to MNIST Dataset](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/tensorflow_v1/0_Prerequisite/mnist_dataset_intro.ipynb).
 
 #### 1 - Introduction
-- **Hello World** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/tensorflow_v1/1_Introduction/helloworld.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/tensorflow_v1/1_Introduction/helloworld.py)). Very simple example to learn how to print "hello world" using TensorFlow.
+- **Hello World** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/tensorflow_v1/1_Introduction/helloworld.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/tensorflow_v1/examples/1_Introduction/helloworld.py)). Very simple example to learn how to print "hello world" using TensorFlow.
 - **Basic Operations** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/tensorflow_v1/1_Introduction/basic_operations.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/tensorflow_v1/1_Introduction/basic_operations.py)). A simple example that cover TensorFlow basic operations.
 - **TensorFlow Eager API basics** ([notebook](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/notebooks/tensorflow_v1/1_Introduction/basic_eager_api.ipynb)) ([code](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/tensorflow_v1/1_Introduction/basic_eager_api.py)). Get started with TensorFlow's Eager API.
 
