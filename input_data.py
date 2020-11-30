@@ -90,7 +90,7 @@ class DataSet(object):
   def epochs_completed(self):
     return self._epochs_completed
   def next_batch(self, batch_size, fake_data=False):
-    """Return the next `batch_size` examples from this data set."""
+    """Return the next `batch_size`examples from this data set."""
     if fake_data:
       fake_image = [1.0 for _ in xrange(784)]
       fake_label = 0
