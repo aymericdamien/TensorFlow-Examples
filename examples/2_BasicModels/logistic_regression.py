@@ -33,7 +33,7 @@ b = tf.Variable(tf.zeros([10]))
 pred = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax
 
 # Minimize error using cross entropy
-cost = tf.reduce_mean(-tf.reduce_sum(y*tf.log(pred), reduction_indices=1))
+cost = tf.reduce_mean(-tf.reduce_sum(y*tf.log(tf.clip_by_value(pred,1e-10,1.0)), reduction_indices=1))
 # Gradient Descent
 optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
 
