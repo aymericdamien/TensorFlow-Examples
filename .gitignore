@@ -11,3 +11,4 @@ dist/*
 checkpoint
 htmlcov
 mnist
+/.vs
