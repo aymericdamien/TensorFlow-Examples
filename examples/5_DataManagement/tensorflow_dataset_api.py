@@ -98,7 +98,7 @@ logits_train = conv_net(X, n_classes, dropout, reuse=False, is_training=True)
 logits_test = conv_net(X, n_classes, dropout, reuse=True, is_training=False)
 
 # Define loss and optimizer (with train logits, for dropout to take effect)
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
     logits=logits_train, labels=Y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)

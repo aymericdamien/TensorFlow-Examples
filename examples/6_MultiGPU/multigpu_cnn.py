@@ -148,7 +148,7 @@ with tf.device('/cpu:0'):
                                    reuse=True, is_training=False)
 
             # Define loss and optimizer (with train logits, for dropout to take effect)
-            loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+            loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
                 logits=logits_train, labels=_y))
             optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
             grads = optimizer.compute_gradients(loss_op)
