@@ -22,4 +22,4 @@ hello = tf.constant('Hello, TensorFlow!')
 sess = tf.Session()
 
 # Run the op
-print(sess.run(hello))
+print(sess.run(hello).decode())
