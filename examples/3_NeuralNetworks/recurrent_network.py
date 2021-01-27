@@ -15,6 +15,7 @@ from __future__ import print_function
 
 import tensorflow as tf
 from tensorflow.contrib import rnn
+from tensorflow.python.saved_model.simple_save import simple_save
 
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
@@ -70,7 +71,7 @@ def RNN(x, weights, biases):
     return tf.matmul(outputs[-1], weights['out']) + biases['out']
 
 logits = RNN(X, weights, biases)
-prediction = tf.nn.softmax(logits)
+prediction = tf.nn.softmax(logits, name='prediction')
 
 # Define loss and optimizer
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
@@ -113,3 +114,7 @@ with tf.Session() as sess:
     test_label = mnist.test.labels[:test_len]
     print("Testing Accuracy:", \
         sess.run(accuracy, feed_dict={X: test_data, Y: test_label}))
+
+    print("Saving the model")
+    simple_save(sess, export_dir='./saved_recurrent_network', inputs={"images":X}, outputs={"out":prediction})
+
