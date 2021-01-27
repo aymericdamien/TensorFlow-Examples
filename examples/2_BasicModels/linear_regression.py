@@ -84,6 +84,6 @@ with tf.Session() as sess:
         training_cost - testing_cost))
 
     plt.plot(test_X, test_Y, 'bo', label='Testing data')
-    plt.plot(train_X, sess.run(W) * train_X + sess.run(b), label='Fitted line')
+    plt.plot(test_X, sess.run(W) * test_X + sess.run(b), label='Fitted line')
     plt.legend()
     plt.show()
