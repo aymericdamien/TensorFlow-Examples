@@ -142,7 +142,7 @@ def dynamicRNN(x, seqlen, weights, biases):
 
     # Hack to build the indexing and retrieve the right output.
     batch_size = tf.shape(outputs)[0]
-    # Start indices for each sample
+    # End indices for each sample
     index = tf.range(0, batch_size) * seq_max_len + (seqlen - 1)
     # Indexing
     outputs = tf.gather(tf.reshape(outputs, [-1, n_hidden]), index)
