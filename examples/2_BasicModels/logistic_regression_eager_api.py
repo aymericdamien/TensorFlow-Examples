@@ -81,7 +81,7 @@ for step in range(num_steps):
 
     if step == 0:
         # Display the initial cost, before optimizing
-        print("Initial loss= {:.9f}".format(average_loss))
+        print(f"Initial loss= {average_loss}")
 
     # Update the variables following gradients info
     optimizer.apply_gradients(grad(logistic_regression, x_batch, y_batch))
@@ -92,8 +92,8 @@ for step in range(num_steps):
             average_loss /= display_step
             average_acc /= display_step
         print("Step:", '%04d' % (step + 1), " loss=",
-              "{:.9f}".format(average_loss), " accuracy=",
-              "{:.4f}".format(average_acc))
+              f"{average_loss}", " accuracy=",
+              f"{average_acc}")
         average_loss = 0.
         average_acc = 0.
 
@@ -102,4 +102,4 @@ testX = mnist.test.images
 testY = mnist.test.labels
 
 test_acc = accuracy_fn(logistic_regression, testX, testY)
-print("Testset Accuracy: {:.4f}".format(test_acc))
+print(f"Testset Accuracy: {test_acc}")
