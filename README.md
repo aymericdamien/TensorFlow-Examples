@@ -77,7 +77,7 @@ or (with GPU support):
 pip install tensorflow_gpu
 ```
 
-For more details about TensorFlow installation, you can check [TensorFlow Installation Guide](https://www.tensorflow.org/install/)
+For more details about TensorFlow installation, you can check [TensorFlow Installation Guide](https://www.tensorflow.org/install/).
 
 
 ## TensorFlow v1 Examples - Index
