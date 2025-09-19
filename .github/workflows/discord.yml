@@ -1,0 +1,39 @@
+name: Notify Discord on push
+
+on:
+  push:  # run on any branch; change if you want test again and again
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compose message
+        id: compose
+        run: |
+          REPO="${{ github.repository }}"
+          BRANCH="${{ github.ref_name }}"
+          ACTOR="${{ github.actor }}"
+          URL="https://github.com/${REPO}/commits/${BRANCH}"
+          # Use \n inside the string; jq will escape correctly
+          echo "MSG=✅ Push to **${REPO}** on **${BRANCH}** by **${ACTOR}**\n${URL}" >> $GITHUB_ENV
+
+      # 🔎 DEBUG STEP (insert here)
+      - name: Minimal test to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          echo "Testing webhook with a simple message..."
+          curl -i -H "Content-Type: application/json" \
+               -d '{"content":"Hello from GitHub Actions 👋"}' \
+               "$DISCORD_WEBHOOK"
+
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          MSG: ${{ env.MSG }}
+        run: |
+          # Build valid JSON safely
+          payload=$(jq -nc --arg content "$MSG" '{content:$content}')
+          # Send and show status + any error body for debugging
+          curl -sS -i -H "Content-Type: application/json" \
+               -d "$payload" \
+               "$DISCORD_WEBHOOK"

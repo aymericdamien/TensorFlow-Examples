@@ -1,7 +1,7 @@
 '''
 HelloWorld example using TensorFlow library.
 
-Author: Aymeric Damien
+Author: Aymeric Damienasxasx
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
