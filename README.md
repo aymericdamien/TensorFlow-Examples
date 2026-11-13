@@ -5,6 +5,7 @@ This tutorial was designed for easily diving into TensorFlow, through examples. 
 It is suitable for beginners who want to find clear and concise examples about TensorFlow. Besides the traditional 'raw' TensorFlow implementations, you can also find the latest TensorFlow API practices (such as `layers`, `estimator`, `dataset`, ...).
 
 **Update (11/13/2026):** JAX Examples Available: [check here](https://github.com/aymericdamien/JAX-Examples).
+
 **Update (05/16/2020):** Moving all default examples to TF2. For TF v1 examples: [check here](https://github.com/aymericdamien/TensorFlow-Examples/blob/master/tensorflow_v1).
 
 ## Tutorial index
